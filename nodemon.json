@@ -1,0 +1,8 @@
+{
+    "env": {
+        "MONGO_USER": "dariacode",
+        "MONGO_PASSWORD": "Willy1109",
+        "DATABASE": "mongodb+srv://dariacode:Willy1109@cluster0-mthik.gcp.mongodb.net/timer-app?retryWrites=true&w=majority",
+        "MONGO_DB": "timer-app"
+    }
+}
