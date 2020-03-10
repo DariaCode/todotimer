@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs'); //to encrypt the passwords in the database
 
 const Task = require('../../models/task');
 const User = require('../../models/user');
+const Sending = require('../../models/sending');
 
 // tasks() and user() help to avoid infinite loop
 // $in is the special operator in mongoDB syntax
@@ -51,6 +52,19 @@ const user = async userId => {
     }
 };
 
+// A function for sending tasks
+const singleTask = async taskId => {
+    try {
+        const task = await Task.findById(taskId);
+        return {
+            ...task._doc,
+            _id: task.id,
+            creator: user.bind(this, task.creator)
+        }
+    } catch (err) {
+        throw err;
+    }
+};
 
 module.exports = {
     tasks: async () => {
@@ -68,13 +82,30 @@ module.exports = {
             throw err;
         }
     },
+    sendings: async () => {
+        try {
+            const sendings = await Sending.find();
+            return sendings.map(sending => {
+                return {
+                    ...sending._doc,
+                    _id: sending.id,
+                    user: user.bind(this, sending._doc.user),
+                    task: singleTask.bind(this, sending._doc.task),
+                    createdAt: new Date(sending._doc.createdAt).toISOString(),
+                    updatedAt: new Date(sending._doc.updatedAt).toISOString()
+                };
+            });
+        } catch (err) {
+            throw err;
+        }
+    },
     createTask: async args => {
         const task = new Task({
             title: args.taskInput.title,
             description: args.taskInput.description,
             price: +args.taskInput.price,
             date: new Date(args.taskInput.date),
-            creator: '5e67cf793094d76b50083aed'
+            creator: '5e67fa7614a4816f1a6afe11'
         });
         let createdTask;
         try {
@@ -85,7 +116,7 @@ module.exports = {
                 date: new Date(task._doc.date).toISOString(),
                 creator: user.bind(this, result._doc.creator)
             }
-            const creator = await User.findById('5e67cf793094d76b50083aed');
+            const creator = await User.findById('5e67fa7614a4816f1a6afe11');
 
             // Checking whether the user who is creating this task exists in the database. 
             // If yes, we push this task to user's data and update it
@@ -124,6 +155,41 @@ module.exports = {
                 password: null,
                 /*    _id: result._doc._id.toSring() */
             };
+        } catch (err) {
+            throw err;
+        };
+    },
+    sendTask: async args => {
+        const fetchedTask = await Task.findOne({
+            _id: args.taskId
+        });
+        const sending = new Sending({
+            user: '5e67fa7614a4816f1a6afe11',
+            task: fetchedTask
+        });
+        const result = await sending.save();
+        return {
+            ...result._doc,
+            _id: result.id,
+            user: user.bind(this, result._doc.user),
+            task: singleTask.bind(this, result._doc.task),
+            createdAt: new Date(result._doc.createdAt).toISOString(),
+            updatedAt: new Date(result._doc.updatedAt).toISOString()
+        };
+    },
+    cancelSending: async args => {
+        try {
+            const sending = await Sending.findById(args.sendingId).populate('task');
+            const task = {
+                ...sending.task._doc,
+                _id: sending.task.id,
+                creator: user.bind(this, sending.task._doc.creator)
+            };
+            console.log(task);
+            await Sending.deleteOne({
+                _id: args.sendingId
+            });
+            return task;
         } catch (err) {
             throw err;
         };

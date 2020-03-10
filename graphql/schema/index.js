@@ -26,6 +26,7 @@ type User {
 }
 
 type Sending {
+    _id: ID!
     task: Task!
     user: User!
     createdAt: String!
@@ -47,11 +48,14 @@ input UserInput {
 
 type RootQuery {
     tasks: [Task!]!
+    sendings: [Sending!]!
 }
 
 type RootMutation {
     createTask(taskInput: TaskInput): Task
     createUser(userInput: UserInput): User
+    sendTask(taskId: ID!): Sending!
+    cancelSending(sendingId: ID!): Task!
 }
 
 schema {
