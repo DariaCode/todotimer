@@ -26,19 +26,7 @@ app.use('/graphql', graphqlHttp({
 
 /*
 MUST CHANGE IT!!!!!
-mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-mthik.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`)
-
-mutation {
-  createTask(taskInput: {title: "test2", description: "test again", price: 9.99, date: "2020-03-10T03:35:42.911Z"}) {
-    title
-  }
-}
-query {
-  tasks {
-    title
-    _id
-  } 
-}
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-mthik.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`);
 */
 
 mongoose.connect(`mongodb+srv://dariacode:Willy1109@cluster0-mthik.gcp.mongodb.net/timer-app?retryWrites=true&w=majority`, {
