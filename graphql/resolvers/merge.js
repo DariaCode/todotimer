@@ -82,6 +82,6 @@ const transformSending = sending => {
 
 // exports.tasks = tasks;
 // exports.user = user;
-exports.singleTask = singleTask;
+// exports.singleTask = singleTask;
 exports.transformTask = transformTask;
 exports.transformSending = transformSending;

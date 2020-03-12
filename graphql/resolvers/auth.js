@@ -7,6 +7,7 @@ Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 const bcrypt = require('bcryptjs'); //to encrypt the passwords in the database
+const jwt = require('jsonwebtoken'); //to generate JSON web token 
 
 const User = require('../../models/user');
 
@@ -36,6 +37,31 @@ module.exports = {
             };
         } catch (err) {
             throw err;
+        }
+    }, 
+    login: async ( {email, password}) => {
+        const user = await User.findOne({
+            email: email
+        });
+        //to validate the email whether it exists in the database or not.
+        if (!user) {
+            throw new Error('User does not exist');
+        }
+        // to compare password by using bcrypt.
+        const isEqual = await bcrypt.compare(password, user.password);
+        if (!isEqual) {
+            throw new Error('Password is incorrect');
+        }
+        const token = jwt.sign({
+            userId: user.id,
+            email: user.email
+        }, 'willyisthebestdog', {
+            expiresIn: '1h'
+        });
+        return {
+            userId: user.id,
+            token: token,
+            tokenExpiration: 1
         };
-    }
+    } 
 };

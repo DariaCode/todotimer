@@ -23,18 +23,24 @@ module.exports = {
             throw err;
         }
     },
-    sendTask: async args => {
+    sendTask: async (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated');
+        }
         const fetchedTask = await Task.findOne({
             _id: args.taskId
         });
         const sending = new Sending({
-            user: '5e67fa7614a4816f1a6afe11',
+            user: req.userId,
             task: fetchedTask
         });
         const result = await sending.save();
         return transformSending(result);
     },
-    cancelSending: async args => {
+    cancelSending: async (args,req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated');
+        }
         try {
             const sending = await Sending.findById(args.sendingId).populate('task');
             const task = transformTask(sending.task);
