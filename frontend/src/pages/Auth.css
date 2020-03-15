@@ -1,0 +1,43 @@
+/* ----------------------------------------------------
+Stylesheet for React.js / Singin
+
+Updated: 03/13/2020
+Author: Daria Vodzinskaia
+Website: www.dariacode.dev
+-------------------------------------------------------  */
+
+.auth-form {
+    width: 25rem;
+    max-width: 50%;
+    margin: 5rem auto;
+}
+
+.form-control label,
+.form-control input {
+    width: 100%;
+    display: block;
+};
+
+.form-control label{
+    margin-bottom: 0.5rem;
+};
+
+.form-control {
+    margin-bottom: 1rem;
+};
+
+.form-actions button{
+    background:  rgb(175, 252, 255);
+    font: inherit;
+    border: 1px solid rgb(105, 161, 163);
+    border-radius: 3px;
+    padding: 0.25rem 1rem;
+    margin-right: 0.5rem;
+    box-shadow: 1px 1px 5px gray;
+    cursor: pointer;
+};
+
+.form-actions button:hover,
+.form-actions button:active{
+    background: rgb(105, 161, 163);
+};
