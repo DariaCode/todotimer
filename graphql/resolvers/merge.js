@@ -5,11 +5,25 @@ Updated: 03/10/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
+const DataLoader = require('dataloader');
 
 const Task = require('../../models/task');
 const User = require('../../models/user');
-const { dateToString } = require('../../helpers/date');
+const {
+    dateToString
+} = require('../../helpers/date');
 
+const taskLoader = new DataLoader((taskIds) => {
+    return tasks(taskIds);
+});
+
+const userLoader = new DataLoader((userIds) => {
+    return User.find({
+        _id: {
+            $in: userIds
+        }
+    });
+});
 
 // tasks() and user() help to avoid infinite loop.
 // $in is the special operator in mongoDB syntax
@@ -21,7 +35,7 @@ const tasks = async taskIds => {
                 $in: taskIds
             }
         });
-       return tasks.map(task => {
+        return tasks.map(task => {
             return transformTask(task);
         });
 
@@ -34,11 +48,12 @@ const tasks = async taskIds => {
 // In this case - user's(creator's) info to the task
 const user = async userId => {
     try {
-        const user = await User.findById(userId);
+        // instead of using User.findById(userId) we use the dataloader
+        const user = await userLoader.load(userId.toString());
         return {
             ...user._doc,
             _id: user.id,
-            createdTasks: tasks.bind(this, user._doc.createdTasks),
+            createdTasks: taskLoader.loadMany.bind(this, user._doc.createdTasks),
             password: null
         };
     } catch (err) {
@@ -49,8 +64,9 @@ const user = async userId => {
 // A function for sending tasks
 const singleTask = async taskId => {
     try {
-        const task = await Task.findById(taskId);
-        return transformTask(task);
+        // instead of using Task.findById(taskId) we use the dataloader
+        const task = await taskLoader.load(taskId.toString());
+        return task;
     } catch (err) {
         throw err;
     }
@@ -69,7 +85,7 @@ const transformTask = task => {
 };
 
 const transformSending = sending => {
-    return {  
+    return {
         ...sending._doc,
         _id: sending.id,
         user: user.bind(this, sending._doc.user),
