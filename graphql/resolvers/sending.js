@@ -13,9 +13,13 @@ const { transformTask, transformSending} =require('./merge');
 
 
 module.exports = {
-    sendings: async () => {
+    sendings: async (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated');
+        }
         try {
-            const sendings = await Sending.find();
+            // to find only sendings for this user
+            const sendings = await Sending.find({user: req.userId});
             return sendings.map(sending => {
                 return transformSending(sending);
             });

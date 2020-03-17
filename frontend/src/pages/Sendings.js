@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 
 import AuthContext from '../context/auth-context';
 import Spinner from '../components/Spinner/Spinner';
+import SendingList from '../components/Sendings/SendingList/SendingList';
 
 class SendingsPage extends Component {
     state = {
@@ -62,20 +63,54 @@ class SendingsPage extends Component {
         });
     };
 
+    deleteSendingHandler = sendingId => {
+        this.setState({isLoading: true});
+        const requestBody = {
+            query: `
+            mutation {
+                cancelSending(sendingId: "${sendingId}") {
+                    _id
+                    title
+                }
+            }
+        `
+        };
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.context.token
+            }
+        }).then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed ');
+            }
+            return res.json();
+        }).then(resData => {
+            this.setState(prevState => {
+                const updatedSendings = prevState
+                    .sendings
+                    .filter(sending => {
+                        return sending._id !== sendingId;
+                    });
+                return {sendings: updatedSendings, isLoading: false};
+            });
+        }).catch(err => {
+            console.log(err);
+            this.setState({isLoading: false});
+        });
+    };
+
     render() {
         return (
             <React.Fragment>
                 {this.state.isLoading
                     ? <Spinner/>
-                    : (
-                        <ul>
-                            {this
-                                .state
-                                .sendings
-                                .map(sending => <li key={sending._id}>{sending.task.title}
-                                    - {new Date(sending.createdAt).toLocaleDateString()}</li>)}
-                        </ul>
-                    )}
+                    : (<SendingList
+                        sendings={this.state.sendings}
+                        onDelete={this.deleteSendingHandler}/>)}
             </React.Fragment>
         );
     }
