@@ -10,6 +10,8 @@ import React, {Component} from 'react';
 
 import Modal from '../components/Modal/Modal';
 import AuthContext from '../context/auth-context';
+import TaskList from '../components/Tasks/TaskList/TaskList';
+import Spinner from '../components/Spinner/Spinner';
 import './Tasks.css';
 import { canNotDefineSchemaWithinExtensionMessage } from 'graphql/validation/rules/LoneSchemaDefinition';
 
@@ -17,7 +19,9 @@ import { canNotDefineSchemaWithinExtensionMessage } from 'graphql/validation/rul
 class TasksPage extends Component {
     state = {
         creating: false,
-        tasks: []
+        tasks: [],
+        isLoading: false,
+        selectedTask: null
     };
 
     static contextType = AuthContext; 
@@ -29,9 +33,9 @@ class TasksPage extends Component {
         this.dateElRef = React.createRef();
         this.descriptionElRef = React.createRef();
     }
+
     // componentDidMount() executes when the page loads = 
     // is invoked immediately after a component is mounted (inserted into the tree). 
-
     componentDidMount() {
         this.fetchTasks();
     };
@@ -65,10 +69,6 @@ class TasksPage extends Component {
                         description
                         price
                         date
-                        creator {
-                            _id
-                            email
-                        }
                     }
                 }
             `
@@ -91,7 +91,20 @@ class TasksPage extends Component {
             return res.json();
         })
         .then(resData => {
-            this.fetchTasks();
+            this.setState(prevState => { 
+                const updatedTasks = [...prevState.tasks];
+                updatedTasks.push({
+                    _id: resData.data.createTask._id,
+                    title: resData.data.createTask.title,
+                    description: resData.data.createTask.description,
+                    price: resData.data.createTask.price,
+                    date: resData.data.createTask.date,
+                    creator:  {
+                        _id: this.context.userId
+                    }
+                });
+                return {tasks: updatedTasks};
+            });
         })
         .catch(err => {
             console.log(err);
@@ -99,10 +112,11 @@ class TasksPage extends Component {
     };
 
         modalCancelHandler = () => {
-        this.setState({creating: false});
+        this.setState({creating: false, selectedTask: null});
     };
 
         fetchTasks() {
+        this.setState({isLoading: true});
         const requestBody = {
             query: `
             query {
@@ -138,23 +152,35 @@ class TasksPage extends Component {
     })
     .then(resData => {
         const tasks = resData.data.tasks;
-        this.setState({tasks: tasks});
+        this.setState({ tasks: tasks, isLoading: false });
     })
     .catch(err => {
         console.log(err);
+        this.setState({isLoading: false});
     }); 
     };
 
+    showDetailHandler = taskId => {
+        this.setState(prevState => {
+            const selectedTask = prevState.tasks.find(e => e._id === taskId);
+            return {selectedTask: selectedTask};
+        })
+    };
+
+    sendTaskHandler = () => {
+
+    };
+
     render() {
-        // to prepare tasks list to render on the page.
-       /* const tasksList = this.state.tasks.map(task => {
-            return <li key={task._id} className="tasks__list-item">{task.title}</li>
-        });
- */
         return (
             <React.Fragment>
                 {this.state.creating &&
-                <Modal title="add task" canCancel canConfirm onCancel={this.modalCancelHandler} onConfirm={this.modalConfirmHandler}> 
+                <Modal title="add task" 
+                canCancel 
+                canConfirm 
+                onCancel={this.modalCancelHandler} 
+                onConfirm={this.modalConfirmHandler}
+                confirmText="confirm"> 
                     <form>
                         <div className="form-control">
                            <label htmlFor="title">Title</label>
@@ -174,15 +200,30 @@ class TasksPage extends Component {
                         </div>
                     </form>
                 </Modal>}
+
                 {this.context.token &&
-                <div className="tasks-control">
+                (<div className="tasks-control">
                     <button className="btn" onClick={this.startCreateTaskHandler}>create task</button>
-                </div>}
-                <ul className="tasks__list">
-                    {this.state.tasks.map(task => {
-                         return <li key={task._id} className="tasks__list-item">{task.title}</li>
-                     })}
-                </ul>
+                </div> )}
+
+                {this.state.selectedTask && (
+                <Modal title={this.state.selectedTask.title} 
+                canCancel 
+                canConfirm 
+                onCancel={this.modalCancelHandler} 
+                onConfirm={this.sendTaskHandler}
+                confirmText="send"> 
+                    <h1>{this.state.selectedTask.title}</h1>
+                    <h2>{this.state.selectedTask.price} - {new Date(this.state.selectedTask.date).toLocaleDateString()}</h2>
+                    <p>{this.state.selectedTask.description}</p>
+                 </Modal>) }
+
+                {this.state.isLoading ? 
+                 <Spinner /> :
+                <TaskList 
+                    tasks={this.state.tasks} 
+                    authUserId={this.context.userId}
+                    onViewDetail={this.showDetailHandler} />}
             </React.Fragment>
         );
     }

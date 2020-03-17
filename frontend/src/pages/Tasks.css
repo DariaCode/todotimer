@@ -7,17 +7,4 @@
     max-width: 80%;
 };
 
-.tasks__list {
-    margin-top: 2rem;
-    width: 40rem;
-    max-width: 90%;
-    margin: 2rem auto;
-    padding: 0;
-}
-
-.tasks__list-item {
-    margin: 1rem auto;
-    padding: 1rem;
-    border: 1px solid rgb(175, 252, 255);
-    list-style: none;
-}
+  
