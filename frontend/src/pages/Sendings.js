@@ -67,13 +67,16 @@ class SendingsPage extends Component {
         this.setState({isLoading: true});
         const requestBody = {
             query: `
-            mutation {
-                cancelSending(sendingId: "${sendingId}") {
+            mutation CancelSending($id: ID!) {
+                cancelSending(sendingId: $id) {
                     _id
                     title
                 }
             }
-        `
+        `,
+            variables: {
+                id: sendingId
+            }
         };
 
         fetch('http://localhost:8000/graphql', {

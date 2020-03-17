@@ -5,7 +5,7 @@ Updated: 03/10/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
-const DataLoader = require('dataloader');
+const DataLoader = require('dataloader'); // to prevent duplicate requests
 
 const Task = require('../../models/task');
 const User = require('../../models/user');
@@ -53,7 +53,7 @@ const user = async userId => {
         return {
             ...user._doc,
             _id: user.id,
-            createdTasks: taskLoader.loadMany.bind(this, user._doc.createdTasks),
+            createdTasks: () => taskLoader.loadMany(user._doc.createdTasks),
             password: null
         };
     } catch (err) {

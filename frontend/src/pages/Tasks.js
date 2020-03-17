@@ -65,8 +65,8 @@ class TasksPage extends Component {
 
         const requestBody = {
             query: `
-                mutation {
-                    createTask(taskInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
+                mutation CreateTask($title: String!, $desc: String!, $price: Float!, $date: String!) {
+                    createTask(taskInput: {title: $title, description: $desc, price: $price, date: $date}) {
                         _id
                         title
                         description
@@ -74,7 +74,13 @@ class TasksPage extends Component {
                         date
                     }
                 }
-            `
+            `, 
+            variables: {
+                title: title,
+                desc: description,
+                price: price,
+                date: date
+            }
         };
 
         const token = this.context.token;
@@ -173,14 +179,17 @@ class TasksPage extends Component {
         }
         const requestBody = {
             query: `
-            mutation {
-                sendTask(taskId: "${this.state.selectedTask._id}") {
+            mutation SendTask($id: ID!) {
+                sendTask(taskId: $id) {
                     _id
                     createdAt
                     updatedAt
                 }
             }
-        `
+        `, 
+            variables: {
+                id: this.state.selectedTask._id
+            }
         };
 
         fetch('http://localhost:8000/graphql', {
