@@ -23,6 +23,8 @@ class TasksPage extends Component {
         selectedTask: null
     };
 
+    isActive = true;
+
     static contextType = AuthContext;
 
     constructor(props) {
@@ -133,8 +135,6 @@ class TasksPage extends Component {
         `
         };
 
-        const token = this.context.token;
-
         fetch('http://localhost:8000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
@@ -148,7 +148,9 @@ class TasksPage extends Component {
             return res.json();
         }).then(resData => {
             const tasks = resData.data.tasks;
-            this.setState({tasks: tasks, isLoading: false});
+            if (this.isActive) {
+                this.setState({tasks: tasks, isLoading: false});
+            }
         }).catch(err => {
             console.log(err);
             this.setState({isLoading: false});
@@ -164,7 +166,50 @@ class TasksPage extends Component {
         })
     };
 
-    sendTaskHandler = () => {};
+    sendTaskHandler = () => {
+        if (!this.context.token) {
+            this.setState({ selectedTask: null });
+            return ;
+        }
+        const requestBody = {
+            query: `
+            mutation {
+                sendTask(taskId: "${this.state.selectedTask._id}") {
+                    _id
+                    createdAt
+                    updatedAt
+                }
+            }
+        `
+        };
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.context.token
+            }
+        }).then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('it is Failed ');
+            }
+            return res.json();
+        }).then(resData => {
+            console.log(resData);
+            this.setState({ selectedTask: null });
+        }).catch(err => {
+            console.log(err);
+        }); 
+    };
+    // componentWillUnmount() is invoked immediately before a component 
+    // is unmounted and destroyed. Perform any necessary cleanup 
+    // in this method, such as invalidating timers, 
+    // canceling network requests, or cleaning up any subscriptions 
+    // that were created in componentDidMount().
+    componentWillUnmount() {
+        this.isActive = false;
+    };
 
     render() {
         return (
@@ -209,7 +254,7 @@ class TasksPage extends Component {
                         canConfirm
                         onCancel={this.modalCancelHandler}
                         onConfirm={this.sendTaskHandler}
-                        confirmText="send">
+                        confirmText={this.context.token? "send" : "confirm"}>
                         <h1>{this.state.selectedTask.title}</h1>
                         <h2>{this.state.selectedTask.price}
                             - {new Date(this.state.selectedTask.date).toLocaleDateString()}</h2>
