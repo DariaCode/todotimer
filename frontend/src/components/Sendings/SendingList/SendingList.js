@@ -13,6 +13,7 @@ const sendingList = props => {
                             <div className="sendings__item-date">
                                 {sending.task.title}
                                 - {new Date(sending.createdAt).toLocaleDateString()}
+                                - {sending.task.price}
                             </div>
                             <div className="sendings__item-actions">
                                 <button

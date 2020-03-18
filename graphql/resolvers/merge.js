@@ -35,6 +35,10 @@ const tasks = async taskIds => {
                 $in: taskIds
             }
         });
+        // to sort the tasks to the same order wit taskIds
+        tasks.sort((a,b) => {
+            return taskIds.indexOf(a._id.toString()) - taskIds.indexOf(b._id.toString());
+        });
         return tasks.map(task => {
             return transformTask(task);
         });

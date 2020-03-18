@@ -11,11 +11,14 @@ import React, {Component} from 'react';
 import AuthContext from '../context/auth-context';
 import Spinner from '../components/Spinner/Spinner';
 import SendingList from '../components/Sendings/SendingList/SendingList';
+import SendingsChart from '../components/Sendings/SendingsChart/SendingsChart';
+import SendingsControl from '../components/Sendings/SendingsControl/SendingsControl';
 
 class SendingsPage extends Component {
     state = {
         isLoading: false,
-        sendings: []
+        sendings: [],
+        outputType: 'list'
     };
 
     static contextType = AuthContext;
@@ -36,6 +39,7 @@ class SendingsPage extends Component {
                         _id
                         title
                         date
+                        price
                     }
                 }
             }
@@ -106,16 +110,34 @@ class SendingsPage extends Component {
         });
     };
 
+    changeOutputTypeHandler = outputType => {
+        if(outputType === 'list') {
+            this.setState({outputType: 'list'});
+        } else {
+            this.setState({outputType: 'chart'});
+        }
+    };
+
     render() {
-        return (
-            <React.Fragment>
-                {this.state.isLoading
-                    ? <Spinner/>
-                    : (<SendingList
+        let content = <Spinner />;
+        if (!this.state.isLoading) {
+            content = (
+                <React.Fragment>
+                    <SendingsControl
+                    activeOutputType={this.state.outputType}
+                    onChange={this.changeOutputTypeHandler} />
+                    <div>
+                        {this.state.outputType === 'list' ? 
+                        <SendingList
                         sendings={this.state.sendings}
-                        onDelete={this.deleteSendingHandler}/>)}
-            </React.Fragment>
-        );
+                        onDelete={this.deleteSendingHandler} /> :
+                        <SendingsChart 
+                        sendings={this.state.sendings} />}
+                    </div>
+                </React.Fragment>
+            );
+        }
+        return <React.Fragment>{content}</React.Fragment>;
     }
 }
 
