@@ -15,12 +15,13 @@ body {
 
 .form-actions button,
 .btn {
-  background:  rgb(175, 252, 255);
+  background:  #C4C1E0;
   font: inherit;
-  border: 1px solid rgb(105, 161, 163);
+  border: 1px solid #7C73E6;
   border-radius: 3px;
   padding: 0.25rem 1rem;
   margin-right: 0.5rem;
+  margin-top: 3px;
   box-shadow: 1px 1px 5px gray;
   cursor: pointer;
 }
@@ -29,5 +30,6 @@ body {
 .form-actions button:active,
 .btn:hover,
 .btn:active {
-  background: rgb(105, 161, 163);
+  background: #7C73E6;
+  color: white
 }

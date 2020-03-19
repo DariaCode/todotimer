@@ -9,11 +9,12 @@ Website: www.dariacode.dev
 import React, {Component} from 'react';
 import {BrowserRouter, Route, Redirect, Switch} from 'react-router-dom';
 
-
+import HomePage from './pages/Home';
 import AuthPage from './pages/Auth';
 import SendingsPage from './pages/Sendings';
 import TasksPage from './pages/Tasks';
 import MainNavigation from './components/Navigation/MainNavigation';
+import Sidebar from './components/Sidebar/Sidebar';
 import AuthContext from './context/auth-context';
 
 import './App.css';
@@ -43,8 +44,9 @@ class App extends Component {
                         login: this.login,
                         logout: this.logout
                     }}>
-                        <MainNavigation/>
+                        <MainNavigation />
                         <main className="main-content">
+                            {this.state.token && <Sidebar />}
                             <Switch>
                                 {this.state.token && <Redirect from="/" to="/tasks" exact/>}
                                 {this.state.token && <Redirect from="/auth" to="/tasks" exact/>}

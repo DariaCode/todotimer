@@ -13,7 +13,6 @@ import AuthContext from '../context/auth-context';
 import TaskList from '../components/Tasks/TaskList/TaskList';
 import Spinner from '../components/Spinner/Spinner';
 import './Tasks.css';
-import {canNotDefineSchemaWithinExtensionMessage} from 'graphql/validation/rules/LoneSchemaDefinition';
 
 class TasksPage extends Component {
     state = {
@@ -211,6 +210,47 @@ class TasksPage extends Component {
             console.log(err);
         }); 
     };
+    deleteTaskHandler = taskId => {
+        const requestBody = {
+            query: `
+            mutation DeleteTask($id: ID!) {
+                deleteTask(taskId: $id) {
+                    _id
+                    title
+                }
+            }
+        `,
+            variables: {
+                id: taskId
+            }
+        };
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.context.token
+            }
+        }).then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed ');
+            }
+            return res.json();
+        }).then(resData => {
+            this.setState(prevState => {
+                const updatedTasks = prevState
+                    .tasks
+                    .filter(task => {
+                        return task._id !== taskId;
+                    });
+                return {tasks: updatedTasks};
+            });
+        }).catch(err => {
+            console.log(err);
+            this.setState({isLoading: false});
+        });
+    };
     // componentWillUnmount() is invoked immediately before a component 
     // is unmounted and destroyed. Perform any necessary cleanup 
     // in this method, such as invalidating timers, 
@@ -276,7 +316,8 @@ class TasksPage extends Component {
                     : <TaskList
                         tasks={this.state.tasks}
                         authUserId={this.context.userId}
-                        onViewDetail={this.showDetailHandler}/>}
+                        onViewDetail={this.showDetailHandler}
+                        onDeleteTask={this.deleteTaskHandler}/>}
             </React.Fragment>
         );
     }

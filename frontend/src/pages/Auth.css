@@ -27,9 +27,9 @@ Website: www.dariacode.dev
 };
 
 .form-actions button{
-    background:  rgb(175, 252, 255);
+    background:  #7C73E6;
     font: inherit;
-    border: 1px solid rgb(105, 161, 163);
+    border: 1px solid #7C73E6;
     border-radius: 3px;
     padding: 0.25rem 1rem;
     margin-right: 0.5rem;
@@ -39,5 +39,5 @@ Website: www.dariacode.dev
 
 .form-actions button:hover,
 .form-actions button:active{
-    background: rgb(105, 161, 163);
+    background: #C4C1E0;
 };

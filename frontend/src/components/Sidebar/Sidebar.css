@@ -1,0 +1,31 @@
+.main-sidebar {
+    height: 100%;
+    width: 10rem;
+    position: fixed;
+    top: 3.5rem;
+    left: 0;
+    background-color: #c4c1e0;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.main-bar__items {
+    list-style-type: none;
+    padding: 1rem auto;
+    color:black;
+}
+
+.main-bar__items li {
+    padding: 0.4rem;
+}
+
+.main-bar__items a {
+    color:black; 
+    text-decoration: none;
+}
+
+.main-bar__items a:hover,
+.main-bar__items a:active {
+    color: #7C73E6;
+    border-bottom: 2px solid #7C73E6;
+}

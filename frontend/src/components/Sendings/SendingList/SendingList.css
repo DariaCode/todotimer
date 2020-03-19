@@ -1,8 +1,8 @@
 .sendings__list {
     list-style: none;
-    margin: 0 auto;
+    margin-left: 12rem;
     padding: 0;
-    width: 40rem;
+    width: 30rem;
     max-width: 90%;
 }
 

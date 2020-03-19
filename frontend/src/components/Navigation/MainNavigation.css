@@ -12,19 +12,24 @@ Website: www.dariacode.dev
     top: 0;
     width: 100%;
     height: 3.5rem;
-    background-color: rgb(175, 252, 255);
+    background-color: #7c73e6;
     padding: 0 1rem;
     display: flex;
     align-items: center;
+    z-index: 1;
+    justify-content: space-between;
 }
 
 .main-navigation__logo h1{
     margin: 0;
     font-size: 1.5rem;
+    text-decoration: none;
+    color: white;
 }
 
 .main-navigation__items {
     margin-left: 1.5rem;
+    padding: 1rem;
 }
 
 .main-navigation__items ul {
@@ -38,13 +43,22 @@ Website: www.dariacode.dev
     margin: 0 1rem;
 }
 
-.main-navigation__items a {
+.main-navigation__items a,
+.btn_logout {
     text-decoration: none;
-    color: black;
+    color: white;
+}
+
+.btn_logout{
+    background-color: #7c73e6;
+    color: white;
+    border: none;
+    font-size: inherit;
 }
 
 .main-navigation__items a:hover,
 .main-navigation__items a:active,
-.main-navigation__items a.active  {
-    color: rgb(3, 8, 248);
+.main-navigation__items a.active {
+    color: #C4C1E0;
+    border-bottom: 2px solid #C4C1E0;
 }

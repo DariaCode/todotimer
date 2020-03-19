@@ -1,7 +1,7 @@
 .task__list-item {
     margin: 1rem auto;
     padding: 1rem;
-    border: 1px solid rgb(175, 252, 255);
+    border: 1px solid #7C73E6;
     list-style: none;
     display: flex;
     justify-content: space-between;
@@ -11,7 +11,7 @@
 .task__list-item h1 {
     margin: 0;
     font-size: 1.5rem;
-    color: rgb(102, 160, 160);
+    color: #7C73E6;
 }
 
 .task__list-item h2 {

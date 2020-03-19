@@ -12,7 +12,11 @@ const taskItem = props => {
             </div>
             <div>
                 {props.userId === props.creatorId
-                    ? <p>You are the owner of this tasks</p>
+                    ? <botton
+                            className="btn"
+                            onClick={props
+                            .onDelete
+                            .bind(this, props.taskId)}>Cancel</botton>
                     : <button
                         className="btn"
                         onClick={props

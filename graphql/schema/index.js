@@ -62,6 +62,7 @@ type RootMutation {
     createUser(userInput: UserInput): User
     sendTask(taskId: ID!): Sending!
     cancelSending(sendingId: ID!): Task!
+    deleteTask(taskId: ID!): Task!
 }
 
 schema {

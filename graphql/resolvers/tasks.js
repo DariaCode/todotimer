@@ -52,5 +52,20 @@ module.exports = {
             console.log(err);
             throw err;
         };
+    },
+    deleteTask: async (args,req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated');
+        }
+        try {
+            const task = await Task.findById(args.taskId);
+            console.log(task);
+            await Task.deleteOne({
+                _id: args.taskId
+            });
+            return task;
+        } catch (err) {
+            throw err;
+        };
     }
 };
