@@ -1,5 +1,5 @@
 /* ----------------------------------------------------
-React.js / auth component
+React.js / Auth component
 
 Updated: 03/13/2020
 Author: Daria Vodzinskaia

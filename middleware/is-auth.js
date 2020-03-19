@@ -1,5 +1,5 @@
 /* ----------------------------------------------------
-Node.js / User resolver for GraphQL
+Node.js / User authentication resolver for GraphQL
 
 Updated: 03/10/2020
 Author: Daria Vodzinskaia
