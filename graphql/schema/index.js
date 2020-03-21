@@ -46,6 +46,13 @@ input TaskInput {
     date: String!
 }
 
+input UpdateTaskInput {
+    title: String
+    description: String
+    price: Float
+    date: String
+}
+
 input UserInput {
     email: String!
     password: String!
@@ -62,6 +69,7 @@ type RootMutation {
     createUser(userInput: UserInput): User
     sendTask(taskId: ID!): Sending!
     cancelSending(sendingId: ID!): Task!
+    updateTask(taskId: ID!, taskInput: UpdateTaskInput): Task!
     deleteTask(taskId: ID!): Task!
 }
 

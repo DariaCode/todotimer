@@ -14,7 +14,8 @@ const taskList = props => {
             userId={props.authUserId}
             creatorId={task.creator._id}
             onDetail={props.onViewDetail}
-            onDelete={props.onDeleteTask} />
+            onDelete={props.onDeleteTask}
+            onEdit={props.onEditTask} />
         )
     });
 

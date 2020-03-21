@@ -17,9 +17,11 @@ import './Tasks.css';
 class TasksPage extends Component {
     state = {
         creating: false,
+        updating: false,
         tasks: [],
         isLoading: false,
-        selectedTask: null
+        selectedTask: null,
+        updatedTask: null
     };
 
     isActive = true;
@@ -117,7 +119,7 @@ class TasksPage extends Component {
     };
 
     modalCancelHandler = () => {
-        this.setState({creating: false, selectedTask: null});
+        this.setState({creating: false, updating: false, selectedTask: null});
     };
 
     fetchTasks() {
@@ -208,8 +210,71 @@ class TasksPage extends Component {
             this.setState({ selectedTask: null });
         }).catch(err => {
             console.log(err);
+        });  
+    };
+
+    startEditTaskHandler = taskId => {
+        this.setState({updating: true, updatedTask: taskId});
+    };
+
+    editTaskHandler = () => {
+        this.setState({updating: false});
+        const taskId = this.state.updatedTask;
+        const title = this.titleElRef.current.value;
+        const price = +this.priceElRef.current.value;
+        const date = this.dateElRef.current.value;
+        const description = this.descriptionElRef.current.value;
+
+        const requestBody = {
+            query: `
+                mutation EditTask($id: ID!, $title: String, $desc: String, $price: Float, $date: String) {
+                    updateTask(taskId: $id, taskInput: {title: $title, description: $desc, price: $price, date: $date}) {
+                        _id
+                        title
+                        description
+                        price
+                        date
+                    }
+                }
+            `, 
+            variables: {
+                id: taskId,
+                title: title,
+                desc: description,
+                price: price,
+                date: date
+            }
+        };
+
+        const token = this.context.token;
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        }).then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed ');
+            }
+            return res.json();
+        }).then(resData => {
+            this.setState(prevState => {
+                const updatedTasks = [...prevState.tasks];
+                const taskIndex = updatedTasks.findIndex((task => task._id === resData.data.updateTask._id));
+                updatedTasks[taskIndex].title = resData.data.updateTask.title;
+                updatedTasks[taskIndex].description = resData.data.updateTask.description;
+                updatedTasks[taskIndex].price = resData.data.updateTask.price;
+                updatedTasks[taskIndex].date = new Date(parseInt(resData.data.updateTask.date)).toISOString();
+                return {tasks: updatedTasks, updatedTask: null};
+            });
+        }).catch(err => {
+            console.log(err);
         }); 
     };
+
     deleteTaskHandler = taskId => {
         const requestBody = {
             query: `
@@ -290,6 +355,33 @@ class TasksPage extends Component {
                     </form>
                 </Modal>}
 
+                {this.state.updating && <Modal
+                    title="add task"
+                    canCancel
+                    canConfirm
+                    onCancel={this.modalCancelHandler}
+                    onConfirm={this.editTaskHandler}
+                    confirmText="confirm">
+                    <form>
+                        <div className="form-control">
+                            <label htmlFor="title">Title</label>
+                            <input type="text" id="title" ref={this.titleElRef}></input>
+                        </div>
+                        <div className="form-control">
+                            <label htmlFor="price">Price</label>
+                            <input type="number" id="price" ref={this.priceElRef}></input>
+                        </div>
+                        <div className="form-control">
+                            <label htmlFor="date">Date</label>
+                            <input type="datetime-local" id="date" ref={this.dateElRef}></input>
+                        </div>
+                        <div className="form-control">
+                            <label htmlFor="description">Description</label>
+                            <textarea rows="4" id="description" ref={this.descriptionElRef}></textarea>
+                        </div>
+                    </form>
+                </Modal>}
+
                 {this.context.token && (
                     <div className="tasks-control">
                         <button className="btn" onClick={this.startCreateTaskHandler}>create task</button>
@@ -317,7 +409,8 @@ class TasksPage extends Component {
                         tasks={this.state.tasks}
                         authUserId={this.context.userId}
                         onViewDetail={this.showDetailHandler}
-                        onDeleteTask={this.deleteTaskHandler}/>}
+                        onDeleteTask={this.deleteTaskHandler}
+                        onEditTask={this.startEditTaskHandler} />}
             </React.Fragment>
         );
     }

@@ -8,11 +8,10 @@ Website: www.dariacode.dev
 
 const Task = require('../../models/task');
 const User = require('../../models/user');
-const { transformTask } = require('../../graphql/resolvers/merge');
-
+const {transformTask} = require('../../graphql/resolvers/merge');
 
 module.exports = {
-    tasks: async () => {
+    tasks: async() => {
         try {
             const tasks = await Task.find()
             return tasks.map(task => {
@@ -22,14 +21,14 @@ module.exports = {
             throw err;
         }
     },
-    createTask: async (args, req) => {
+    createTask: async(args, req) => {
         if (!req.isAuth) {
             throw new Error('Unauthenticated');
         }
         const task = new Task({
             title: args.taskInput.title,
             description: args.taskInput.description,
-            price: +args.taskInput.price,
+            price: + args.taskInput.price,
             date: new Date(args.taskInput.date),
             creator: req.userId
         });
@@ -39,12 +38,14 @@ module.exports = {
             createdTask = transformTask(result);
             const creator = await User.findById(req.userId);
 
-            // Checking whether the user who is creating this task exists in the database. 
+            // Checking whether the user who is creating this task exists in the database.
             // If yes, we push this task to user's data and update it
             if (!creator) {
                 throw new Error('User not found');
             }
-            creator.createdTasks.push(task); //createdTasks from user.js/userSchema
+            creator
+                .createdTasks
+                .push(task); //createdTasks from user.js/userSchema
             await creator.save();
 
             return createdTask;
@@ -53,16 +54,46 @@ module.exports = {
             throw err;
         };
     },
-    deleteTask: async (args,req) => {
+    updateTask: async(args, req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated');
+        } 
+        try {
+            const task = await Task.findById(args.taskId);
+            if (args.taskInput.title) {
+                task.title = args.taskInput.title
+            }
+            if (args.taskInput.description) {
+                task.description = args.taskInput.description
+            }
+            if (args.taskInput.price) {
+                task.price = args.taskInput.price
+            }
+            if (args.taskInput.date) {
+                task.date = args.taskInput.date
+            }
+            await Task
+                .findByIdAndUpdate(args.taskId, {
+                $set: {
+                    title: task.title,
+                    description: task.description,
+                    price: +task.price,
+                    date: new Date(task.date),
+                }
+            })
+                .exec();
+            return await Task.findById(args.taskId);
+        } catch (err) {
+            throw err;
+        };
+    },
+    deleteTask: async(args, req) => {
         if (!req.isAuth) {
             throw new Error('Unauthenticated');
         }
         try {
             const task = await Task.findById(args.taskId);
-            console.log(task);
-            await Task.deleteOne({
-                _id: args.taskId
-            });
+            await Task.deleteOne({_id: args.taskId});
             return task;
         } catch (err) {
             throw err;
