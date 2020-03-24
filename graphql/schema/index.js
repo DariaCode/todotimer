@@ -13,7 +13,7 @@ type Task {
     _id: ID! 
     title: String!
     description: String!
-    price: Float!
+    priority: Float!
     date: String!
     creator: User!
 } 
@@ -42,14 +42,14 @@ type Sending {
 input TaskInput {
     title: String!
     description: String!
-    price: Float!
+    priority: Float!
     date: String!
 }
 
 input UpdateTaskInput {
     title: String
     description: String
-    price: Float
+    priority: Float
     date: String
 }
 

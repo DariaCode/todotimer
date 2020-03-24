@@ -9,7 +9,7 @@ const taskList = props => {
             <TaskItem key={task._id} 
             taskId={task._id} 
             title={task.title}
-            price={task.price}
+            priority={task.priority}
             date={task.date}
             userId={props.authUserId}
             creatorId={task.creator._id}

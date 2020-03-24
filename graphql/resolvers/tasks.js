@@ -28,7 +28,7 @@ module.exports = {
         const task = new Task({
             title: args.taskInput.title,
             description: args.taskInput.description,
-            price: + args.taskInput.price,
+            priority: + args.taskInput.priority,
             date: new Date(args.taskInput.date),
             creator: req.userId
         });
@@ -66,8 +66,8 @@ module.exports = {
             if (args.taskInput.description) {
                 task.description = args.taskInput.description
             }
-            if (args.taskInput.price) {
-                task.price = args.taskInput.price
+            if (args.taskInput.priority) {
+                task.priority = args.taskInput.priority
             }
             if (args.taskInput.date) {
                 task.date = args.taskInput.date
@@ -77,7 +77,7 @@ module.exports = {
                 $set: {
                     title: task.title,
                     description: task.description,
-                    price: +task.price,
+                    priority: +task.priority,
                     date: new Date(task.date),
                 }
             })

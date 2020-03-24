@@ -5,6 +5,25 @@
     margin-left: 12rem;
     width: 30rem;
     max-width: 80%;
-};
+}
 
-  
+.addTask-control {
+    display: block;
+    padding: 1rem;
+    margin-left: 12rem;
+    width: 30rem;
+    max-width: 80%;
+}
+
+.addTask-button {
+    border: none;
+    background: white;
+    width: 30rem;
+    max-width: 80%;
+    font-size: inherit;
+}
+
+#title {
+    width: 80%;
+    margin-left: 1rem;
+}

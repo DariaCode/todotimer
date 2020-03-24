@@ -17,7 +17,7 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
-    price: {
+    priority: {
         type: Number,
         required: true
     }, 

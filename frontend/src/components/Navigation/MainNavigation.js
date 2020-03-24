@@ -9,7 +9,6 @@ Website: www.dariacode.dev
 import React from 'react';
 import {NavLink} from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
-import AddTask from '../Tasks/AddTask/AddTask';
 
 import './MainNavigation.css';
 
@@ -34,9 +33,6 @@ const mainNavigation = props => {
                                 )}
                                 {context.token && (
                                     <React.Fragment>
-                                        <li>
-                                            <AddTask />
-                                        </li>
                                         <li>
                                             <NavLink to="/sendings">Sendings</NavLink>
                                         </li>

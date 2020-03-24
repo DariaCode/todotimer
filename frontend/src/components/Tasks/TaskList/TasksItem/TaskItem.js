@@ -7,7 +7,7 @@ const taskItem = props => {
         <li key={props.taskId} className="task__list-item">
             <div>
                 <h1>{props.title}</h1>
-                <h2>${props.price}
+                <h2>${props.priority}
                     - {new Date(props.date).toLocaleDateString()}</h2>
             </div>
             <div>

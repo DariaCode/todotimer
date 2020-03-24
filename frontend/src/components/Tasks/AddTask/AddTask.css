@@ -1,0 +1,7 @@
+.addTask {
+    padding: 0 1.5rem;
+    margin-left: 11rem;
+    width: 30rem;
+    max-width: 80%;
+    display: flex;
+}
