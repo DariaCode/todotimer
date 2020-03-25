@@ -6,13 +6,17 @@ Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 
 import Modal from '../components/Modal/Modal';
 import AuthContext from '../context/auth-context';
 import TaskList from '../components/Tasks/TaskList/TaskList';
 import Spinner from '../components/Spinner/Spinner';
 import AddTask from '../components/Tasks/AddTask/AddTask';
+import SimplePopover from '../components/Popover/Popover';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import './Tasks.css';
 import {timingSafeEqual} from 'crypto';
 
@@ -378,19 +382,8 @@ class TasksPage extends Component {
                     onConfirm={this.modalConfirmHandler}
                     confirmText="confirm">
                     <form>
-                        <div className="formTask-control">
-                            <label htmlFor="priority"></label>
-                            <select
-                                type="number"
-                                id="priority"
-                                className="custom-select"
-                                ref={this.priorityElRef}>
-                                <option value="0">Normal</option>
-                                <option value="1">! Low</option>
-                                <option value="2">!! Medium</option>
-                                <option value="3">!!! High</option>
-                            </select>
-                        </div>
+                        <SimplePopover
+                        ref={this.priorityElRef} />
                         <div className="formTask-control">
                             <label htmlFor="date">Date</label>
                             <input type="datetime-local" id="date" ref={this.dateElRef}></input>

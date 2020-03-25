@@ -27,3 +27,14 @@
     width: 80%;
     margin-left: 1rem;
 }
+
+.custom-select {
+    border: 0;
+    -webkit-appearance: none;
+    font-size: inherit;
+    background: white;
+}
+.custom-option {
+    border: 0;
+    color: red;
+}
