@@ -13,9 +13,7 @@ import AuthContext from '../context/auth-context';
 import TaskList from '../components/Tasks/TaskList/TaskList';
 import Spinner from '../components/Spinner/Spinner';
 import AddTask from '../components/Tasks/AddTask/AddTask';
-import SimplePopover from '../components/Popover/Popover';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import PriorityPopper from '../components/Popper/Popper';
 
 import './Tasks.css';
 import {timingSafeEqual} from 'crypto';
@@ -382,7 +380,7 @@ class TasksPage extends Component {
                     onConfirm={this.modalConfirmHandler}
                     confirmText="confirm">
                     <form>
-                        <SimplePopover
+                        <PriorityPopper
                         ref={this.priorityElRef} />
                         <div className="formTask-control">
                             <label htmlFor="date">Date</label>
