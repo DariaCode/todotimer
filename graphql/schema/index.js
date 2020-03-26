@@ -12,9 +12,8 @@ module.exports = buildSchema(`
 type Task {
     _id: ID! 
     title: String!
-    description: String!
     priority: Float!
-    date: String!
+    date: String
     creator: User!
 } 
 
@@ -41,14 +40,12 @@ type Sending {
 
 input TaskInput {
     title: String!
-    description: String!
     priority: Float!
-    date: String!
+    date: String
 }
 
 input UpdateTaskInput {
     title: String
-    description: String
     priority: Float
     date: String
 }

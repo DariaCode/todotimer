@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Tasks page component
 
-Updated: 03/13/2020
+Updated: 03/25/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -13,7 +13,9 @@ import AuthContext from '../context/auth-context';
 import TaskList from '../components/Tasks/TaskList/TaskList';
 import Spinner from '../components/Spinner/Spinner';
 import AddTask from '../components/Tasks/AddTask/AddTask';
-import PriorityPopper from '../components/Popper/Popper';
+import PriorityPopper from '../components/Tasks/AddTask/Popper/Popper';
+import DatePicker from '../components/Tasks/AddTask/Pickers/DatePicker';
+import TextField from '@material-ui/core/TextField';
 
 import './Tasks.css';
 import {timingSafeEqual} from 'crypto';
@@ -37,7 +39,6 @@ class TasksPage extends Component {
         this.titleElRef = React.createRef();
         this.priorityElRef = React.createRef();
         this.dateElRef = React.createRef();
-        this.descriptionElRef = React.createRef();
     }
 
     // componentDidMount() executes when the page loads = is invoked immediately
@@ -54,27 +55,29 @@ class TasksPage extends Component {
         this.setState({creating: false});
         const title = this.titleElRef.current.value;
         const priority = +this.priorityElRef.current.value;
-        const date = this.dateElRef.current.value;
-        const description = this.descriptionElRef.current.value;
+        let date = this.dateElRef.current.value;
         // to check input data isn't empty.
-        if (title.trim().length === 0 || priority <= 0 || date.trim().length === 0 || description.trim().length === 0) {
+        if (title.trim().length === 0 || priority <= 0 ) {
             return;
-        }
+        };
+        if (date.trim().length === 0) {
+            date = new Date(parseInt('2000-01-01T05:00:00.000Z')).toISOString();
+        };
+        console.log(date);
         // the task is an object with properties title: title, priority: priority, etc.
         const task = {
             title,
             priority,
-            date,
-            description
+            date
         };
+        console.log(task);
 
         const requestBody = {
             query: `
-                mutation CreateTask($title: String!, $desc: String!, $priority: Float!, $date: String!) {
-                    createTask(taskInput: {title: $title, description: $desc, priority: $priority, date: $date}) {
+                mutation CreateTask($title: String!, $priority: Float!, $date: String) {
+                    createTask(taskInput: {title: $title, priority: $priority, date: $date}) {
                         _id
                         title
-                        description
                         priority
                         date
                     }
@@ -82,7 +85,6 @@ class TasksPage extends Component {
             `,
             variables: {
                 title: title,
-                desc: description,
                 priority: priority,
                 date: date
             }
@@ -108,7 +110,6 @@ class TasksPage extends Component {
                 updatedTasks.push({
                     _id: resData.data.createTask._id,
                     title: resData.data.createTask.title,
-                    description: resData.data.createTask.description,
                     priority: resData.data.createTask.priority,
                     date: resData.data.createTask.date,
                     creator: {
@@ -134,7 +135,6 @@ class TasksPage extends Component {
                 tasks {
                     _id
                     title
-                    description
                     priority
                     date
                     creator {
@@ -227,15 +227,13 @@ class TasksPage extends Component {
         const title = this.titleElRef.current.value;
         const priority = +this.priorityElRef.current.value;
         const date = this.dateElRef.current.value;
-        const description = this.descriptionElRef.current.value;
 
         const requestBody = {
             query: `
-                mutation EditTask($id: ID!, $title: String, $desc: String, $priority: Float, $date: String) {
-                    updateTask(taskId: $id, taskInput: {title: $title, description: $desc, priority: $priority, date: $date}) {
+                mutation EditTask($id: ID!, $title: String, $priority: Float, $date: String) {
+                    updateTask(taskId: $id, taskInput: {title: $title,  priority: $priority, date: $date}) {
                         _id
                         title
-                        description
                         priority
                         date
                     }
@@ -244,7 +242,6 @@ class TasksPage extends Component {
             variables: {
                 id: taskId,
                 title: title,
-                desc: description,
                 priority: priority,
                 date: date
             }
@@ -269,11 +266,11 @@ class TasksPage extends Component {
                 const updatedTasks = [...prevState.tasks];
                 const taskIndex = updatedTasks.findIndex((task => task._id === resData.data.updateTask._id));
                 updatedTasks[taskIndex].title = resData.data.updateTask.title;
-                updatedTasks[taskIndex].description = resData.data.updateTask.description;
                 updatedTasks[taskIndex].priority = resData.data.updateTask.priority;
                 updatedTasks[taskIndex].date = new Date(parseInt(resData.data.updateTask.date)).toISOString();
                 return {tasks: updatedTasks, updatedTask: null};
             });
+
         }).catch(err => {
             console.log(err);
         });
@@ -356,10 +353,6 @@ class TasksPage extends Component {
                             <label htmlFor="date">Date</label>
                             <input type="datetime-local" id="date" ref={this.dateElRef}></input>
                         </div>
-                        <div className="form-control">
-                            <label htmlFor="description">Description</label>
-                            <textarea rows="4" id="description" ref={this.descriptionElRef}></textarea>
-                        </div>
                     </form>
                 </Modal>}
 
@@ -367,8 +360,7 @@ class TasksPage extends Component {
                     <div className="addTask-control">
                         <button className="addTask-button" onClick={this.startCreateTaskHandler}>
                             <div className="formTask-control">
-                                <label htmlFor="title">+</label>
-                                <input type="text" id="title" ref={this.titleElRef} placeholder="Add task"></input>
+                                <TextField id="outlined-basic" label="Add task" variant="outlined" size="medium" multiline fullWidth inputRef={this.titleElRef} />
                             </div>
                         </button>
                     </div>
@@ -380,15 +372,10 @@ class TasksPage extends Component {
                     onConfirm={this.modalConfirmHandler}
                     confirmText="confirm">
                     <form>
+                        <div className="form-control-button">
                         <PriorityPopper
                         ref={this.priorityElRef} />
-                        <div className="formTask-control">
-                            <label htmlFor="date">Date</label>
-                            <input type="datetime-local" id="date" ref={this.dateElRef}></input>
-                        </div>
-                        <div className="formTask-control">
-                            <label htmlFor="description">Description</label>
-                            <textarea rows="4" id="description" ref={this.descriptionElRef}></textarea>
+                        <DatePicker ref={this.dateElRef} />
                         </div>
                     </form>
                 </AddTask>}
@@ -406,7 +393,6 @@ class TasksPage extends Component {
                         <h1>{this.state.selectedTask.title}</h1>
                         <h2>{this.state.selectedTask.price}
                             - {new Date(this.state.selectedTask.date).toLocaleDateString()}</h2>
-                        <p>{this.state.selectedTask.description}</p>
                     </Modal>
                 )}
 

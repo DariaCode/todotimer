@@ -27,7 +27,6 @@ module.exports = {
         }
         const task = new Task({
             title: args.taskInput.title,
-            description: args.taskInput.description,
             priority: + args.taskInput.priority,
             date: new Date(args.taskInput.date),
             creator: req.userId
@@ -63,9 +62,6 @@ module.exports = {
             if (args.taskInput.title) {
                 task.title = args.taskInput.title
             }
-            if (args.taskInput.description) {
-                task.description = args.taskInput.description
-            }
             if (args.taskInput.priority) {
                 task.priority = args.taskInput.priority
             }
@@ -76,7 +72,6 @@ module.exports = {
                 .findByIdAndUpdate(args.taskId, {
                 $set: {
                     title: task.title,
-                    description: task.description,
                     priority: +task.priority,
                     date: new Date(task.date),
                 }

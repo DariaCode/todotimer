@@ -13,17 +13,12 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
-    description: {
-        type: String,
-        required: true
-    },
     priority: {
         type: Number,
         required: true
     }, 
     date: {
-        type: Date,
-        required: true
+        type: Date
     },
     creator: {
         type: Schema.Types.ObjectId,

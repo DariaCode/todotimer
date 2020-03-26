@@ -9,18 +9,22 @@
 
 .addTask-control {
     display: block;
-    padding: 1rem;
+    padding: 1rem 0;
     margin-left: 12rem;
-    width: 30rem;
+    width: 40rem;
     max-width: 80%;
 }
 
 .addTask-button {
     border: none;
     background: white;
-    width: 30rem;
+    width: 40rem;
     max-width: 80%;
     font-size: inherit;
+}
+
+.addTask-button:focus {
+    outline:0;
 }
 
 #title {
@@ -34,7 +38,7 @@
     font-size: inherit;
     background: white;
 }
-.custom-option {
-    border: 0;
-    color: red;
+
+.form-control-button{
+    display: flex;
 }
