@@ -29,6 +29,7 @@ module.exports = {
             title: args.taskInput.title,
             priority: + args.taskInput.priority,
             date: new Date(args.taskInput.date),
+            complete: args.taskInput.complete,
             creator: req.userId
         });
         let createdTask;

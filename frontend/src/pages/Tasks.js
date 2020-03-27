@@ -63,19 +63,17 @@ class TasksPage extends Component {
         if (date.trim().length === 0) {
             date = new Date(parseInt('2000-01-01T05:00:00.000Z')).toISOString();
         };
-        console.log(date);
         // the task is an object with properties title: title, priority: priority, etc.
         const task = {
             title,
             priority,
             date
         };
-        console.log(task);
 
         const requestBody = {
             query: `
                 mutation CreateTask($title: String!, $priority: Float!, $date: String) {
-                    createTask(taskInput: {title: $title, priority: $priority, date: $date}) {
+                    createTask(taskInput: {title: $title, priority: $priority, date: $date, complete: false}) {
                         _id
                         title
                         priority
@@ -112,6 +110,7 @@ class TasksPage extends Component {
                     title: resData.data.createTask.title,
                     priority: resData.data.createTask.priority,
                     date: resData.data.createTask.date,
+                    complete: false,
                     creator: {
                         _id: this.context.userId
                     }
@@ -137,6 +136,7 @@ class TasksPage extends Component {
                     title
                     priority
                     date
+                    complete
                     creator {
                         _id
                         email

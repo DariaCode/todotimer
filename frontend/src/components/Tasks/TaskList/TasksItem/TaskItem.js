@@ -2,7 +2,10 @@ import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';import {ReactComponent as NormalIcon} from '../../AddTask/Popper/PriorityIcons/normal.svg';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import {ReactComponent as NormalIcon} from '../../AddTask/Popper/PriorityIcons/normal.svg';
 import {ReactComponent as MediumIcon} from '../../AddTask/Popper/PriorityIcons/medium.svg';
 import {ReactComponent as LowIcon} from '../../AddTask/Popper/PriorityIcons/low.svg';
 import {ReactComponent as HighIcon} from '../../AddTask/Popper/PriorityIcons/high.svg';
@@ -22,6 +25,7 @@ const TaskItem = props => {
         setAnchorEl(null);
     };
 let date =props.date;
+console.log(date);
 var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
 
     let priority = props.priority;
@@ -44,7 +48,7 @@ var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric
         <li key={props.taskId} className="task__list-item">
             <div>
                 <h1>{props.title} {currentIcon}</h1>
-                <h2>{new Date(props.date).toLocaleDateString("en-US", options)}</h2>
+                <h2>{props.date !='1970-01-01T00:00:02.000Z'? new Date(props.date).toLocaleDateString("en-US", options): ''}</h2>
             </div>
             <div>
                 {props.userId === props.creatorId
@@ -71,12 +75,12 @@ var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric
                                 <MenuItem key="edit"  onClick={props
                                 .onEdit
                                 .bind(this, props.taskId)}>
-                                    Edit
+                                   <EditOutlinedIcon /> Edit
                                 </MenuItem>
                                 <MenuItem key="delete"  onClick={props
                                 .onDelete
                                 .bind(this, props.taskId)}>
-                                    Delete
+                                    <DeleteOutlineIcon /> Delete
                                 </MenuItem>
                             </Menu>
                         </div>

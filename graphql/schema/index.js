@@ -14,6 +14,7 @@ type Task {
     title: String!
     priority: Float!
     date: String
+    complete: Boolean!
     creator: User!
 } 
 
@@ -42,12 +43,14 @@ input TaskInput {
     title: String!
     priority: Float!
     date: String
+    complete: Boolean!
 }
 
 input UpdateTaskInput {
     title: String
     priority: Float
     date: String
+    complete: Boolean!
 }
 
 input UserInput {

@@ -20,6 +20,10 @@ const taskSchema = new Schema({
     date: {
         type: Date
     },
+    complete: {
+        type: Boolean,
+        required: true
+    },
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User' //the module from user.js
