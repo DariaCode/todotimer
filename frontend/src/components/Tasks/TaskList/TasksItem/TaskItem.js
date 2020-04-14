@@ -3,6 +3,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import {ReactComponent as NormalIcon} from '../../AddTask/Popper/PriorityIcons/normal.svg';
@@ -24,9 +26,13 @@ const TaskItem = props => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-let date =props.date;
-console.log(date);
-var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+
+    var options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    };
 
     let priority = props.priority;
     let currentIcon;
@@ -47,8 +53,21 @@ var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric
     return (
         <li key={props.taskId} className="task__list-item">
             <div>
-                <h1>{props.title} {currentIcon}</h1>
-                <h2>{props.date !='1970-01-01T00:00:02.000Z'? new Date(props.date).toLocaleDateString("en-US", options): ''}</h2>
+                <h1>
+                    <IconButton
+                        onClick={props
+                        .onComplete
+                        .bind(this, props.taskId)}>
+                        {props.complete
+                            ? <CheckCircleIcon/>
+                            : <RadioButtonUncheckedIcon/>}
+                    </IconButton>
+                    {currentIcon}
+                    {props.title}
+                    <p>{props.date !== '1970-01-01T00:00:02.000Z'
+                        ? new Date(props.date).toLocaleDateString("en-US", options)
+                        : ''}</p>
+                </h1>
             </div>
             <div>
                 {props.userId === props.creatorId
@@ -68,19 +87,25 @@ var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric
                                 onClose={handleClose}
                                 PaperProps={{
                                 style: {
-                                    maxHeight: 48* 4.5,
+                                    maxHeight: 48 * 4.5,
                                     width: '20ch'
                                 }
                             }}>
-                                <MenuItem key="edit"  onClick={props
-                                .onEdit
-                                .bind(this, props.taskId)}>
-                                   <EditOutlinedIcon /> Edit
+                                <MenuItem
+                                    key="edit"
+                                    onClick={props
+                                    .onEdit
+                                    .bind(this, props.taskId)}>
+                                    <EditOutlinedIcon/>
+                                    Edit
                                 </MenuItem>
-                                <MenuItem key="delete"  onClick={props
-                                .onDelete
-                                .bind(this, props.taskId)}>
-                                    <DeleteOutlineIcon /> Delete
+                                <MenuItem
+                                    key="delete"
+                                    onClick={props
+                                    .onDelete
+                                    .bind(this, props.taskId)}>
+                                    <DeleteOutlineIcon/>
+                                    Delete
                                 </MenuItem>
                             </Menu>
                         </div>

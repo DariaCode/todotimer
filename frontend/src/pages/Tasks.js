@@ -6,7 +6,7 @@ Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
-import React, {Component, useState} from 'react';
+import React, {Component} from 'react';
 
 import Modal from '../components/Modal/Modal';
 import AuthContext from '../context/auth-context';
@@ -18,7 +18,7 @@ import DatePicker from '../components/Tasks/AddTask/Pickers/DatePicker';
 import TextField from '@material-ui/core/TextField';
 
 import './Tasks.css';
-import {timingSafeEqual} from 'crypto';
+
 
 class TasksPage extends Component {
     state = {
@@ -39,6 +39,7 @@ class TasksPage extends Component {
         this.titleElRef = React.createRef();
         this.priorityElRef = React.createRef();
         this.dateElRef = React.createRef();
+        this.completeElRef = React.createRef();
     }
 
     // componentDidMount() executes when the page loads = is invoked immediately
@@ -117,6 +118,7 @@ class TasksPage extends Component {
                 });
                 return {tasks: updatedTasks};
             });
+            this.titleElRef.current.value = '';
         }).catch(err => {
             console.log(err);
         });
@@ -150,7 +152,8 @@ class TasksPage extends Component {
             method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.context.token
             }
         }).then(res => {
             if (res.status !== 200 && res.status !== 201) {
@@ -159,6 +162,7 @@ class TasksPage extends Component {
             return res.json();
         }).then(resData => {
             const tasks = resData.data.tasks;
+            console.log(tasks);
             if (this.isActive) {
                 this.setState({tasks: tasks, isLoading: false});
             }
@@ -236,6 +240,7 @@ class TasksPage extends Component {
                         title
                         priority
                         date
+                        complete
                     }
                 }
             `,
@@ -269,6 +274,52 @@ class TasksPage extends Component {
                 updatedTasks[taskIndex].priority = resData.data.updateTask.priority;
                 updatedTasks[taskIndex].date = new Date(parseInt(resData.data.updateTask.date)).toISOString();
                 return {tasks: updatedTasks, updatedTask: null};
+            });
+
+        }).catch(err => {
+            console.log(err);
+        });
+    };
+
+    completeTaskHandler = taskId => {
+        const requestBody = {
+            query: `
+                mutation CompleteTask($id: ID!) {
+                    completeTask(taskId: $id) {
+                        _id
+                        title
+                        priority
+                        date
+                        complete
+                    }
+                }
+            `,
+            variables: {
+                id: taskId
+            }
+        };
+
+        const token = this.context.token;
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        }).then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed ');
+            }
+            return res.json();
+        }).then(resData => {
+            this.setState(prevState => {
+                const updatedTasks = [...prevState.tasks];
+                console.log(updatedTasks);
+                const taskIndex = updatedTasks.findIndex((task => task._id === resData.data.completeTask._id));
+                updatedTasks[taskIndex].complete = resData.data.completeTask.complete;
+                return {tasks: updatedTasks};
             });
 
         }).catch(err => {
@@ -403,7 +454,8 @@ class TasksPage extends Component {
                         authUserId={this.context.userId}
                         onViewDetail={this.showDetailHandler}
                         onDeleteTask={this.deleteTaskHandler}
-                        onEditTask={this.startEditTaskHandler}/>}
+                        onEditTask={this.startEditTaskHandler}
+                        onCompleteTask={this.completeTaskHandler}/>}
             </React.Fragment>
         );
     }

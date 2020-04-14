@@ -33,7 +33,6 @@ const datePicker = React.forwardRef((props, ref) => {
 
     const handleDateChange = date => {
         let formatDate = new Date(date).toISOString();
-        console.log(formatDate);
         setSelectedDate(formatDate);
     };
 
@@ -43,7 +42,6 @@ const datePicker = React.forwardRef((props, ref) => {
 
     const today = new Date().toISOString();
     const handleToday = () => {
-        console.log(today);
         setSelectedDate(today);
     };
 

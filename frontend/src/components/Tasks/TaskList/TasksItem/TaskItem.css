@@ -17,11 +17,12 @@
 .task__list-item h2 {
     margin: 0;
     font-size: 1rem;
-    color: grey;
+    color: rgb(114, 114, 114);
 }
 
 .task__list-item p {
     margin: 0;
+    padding-left: 4.5rem;
     font-size: 1rem;
     color: grey;
 }

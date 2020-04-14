@@ -11,9 +11,13 @@ const User = require('../../models/user');
 const {transformTask} = require('../../graphql/resolvers/merge');
 
 module.exports = {
-    tasks: async() => {
+    tasks: async(args, req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated');
+        }
         try {
-            const tasks = await Task.find()
+            // to find only tasks for creator-user
+            const tasks = await Task.find({creator: req.userId});
             return tasks.map(task => {
                 return transformTask(task);
             });
@@ -75,6 +79,29 @@ module.exports = {
                     title: task.title,
                     priority: +task.priority,
                     date: new Date(task.date),
+                }
+            })
+                .exec();
+            return await Task.findById(args.taskId);
+        } catch (err) {
+            throw err;
+        };
+    },
+    completeTask: async(args, req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated');
+        } 
+        try {
+            const task = await Task.findById(args.taskId);
+            if (task.complete === false) {
+                task.complete = true
+            } else {
+                task.complete = false
+            }
+            await Task
+                .findByIdAndUpdate(args.taskId, {
+                $set: {
+                    complete: task.complete
                 }
             })
                 .exec();

@@ -11,11 +11,13 @@ const taskList = props => {
             title={task.title}
             priority={task.priority}
             date={task.date}
+            complete={task.complete}
             userId={props.authUserId}
             creatorId={task.creator._id}
             onDetail={props.onViewDetail}
             onDelete={props.onDeleteTask}
-            onEdit={props.onEditTask} />
+            onEdit={props.onEditTask}
+            onComplete={props.onCompleteTask} />
         )
     });
 

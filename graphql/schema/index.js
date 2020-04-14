@@ -50,7 +50,6 @@ input UpdateTaskInput {
     title: String
     priority: Float
     date: String
-    complete: Boolean!
 }
 
 input UserInput {
@@ -70,6 +69,7 @@ type RootMutation {
     sendTask(taskId: ID!): Sending!
     cancelSending(sendingId: ID!): Task!
     updateTask(taskId: ID!, taskInput: UpdateTaskInput): Task!
+    completeTask(taskId: ID!): Task!
     deleteTask(taskId: ID!): Task!
 }
 

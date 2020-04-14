@@ -44,14 +44,14 @@ class App extends Component {
                         login: this.login,
                         logout: this.logout
                     }}>
-                        <MainNavigation />
+                        <MainNavigation/>
                         <main className="main-content">
-                            {this.state.token && <Sidebar />}
+                            {this.state.token && <Sidebar/>}
                             <Switch>
                                 {this.state.token && <Redirect from="/" to="/tasks" exact/>}
                                 {this.state.token && <Redirect from="/auth" to="/tasks" exact/>}
                                 {!this.state.token && <Route path="/auth" component={AuthPage}/>}
-                                <Route path="/tasks" component={TasksPage}/> 
+                                {this.state.token && <Route path="/tasks" component={TasksPage}/>}
                                 {this.state.token && <Route path="/sendings" component={SendingsPage}/>}
                                 {!this.state.token && <Redirect to="/auth" exact/>}
                             </Switch>
