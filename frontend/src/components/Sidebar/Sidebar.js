@@ -22,7 +22,9 @@ const sidebar = props => {
                                 <li>
                                     <NavLink to="/tasks">All tasks</NavLink>
                                 </li>
-                                <li>Today</li>
+                                <li>
+                                    <NavLink to="/today">Today</NavLink>
+                                </li>
                                 <li>This week</li>
                                 <li>
                                     <NavLink to="/sendings">Sendings</NavLink>

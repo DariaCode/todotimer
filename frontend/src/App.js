@@ -13,6 +13,7 @@ import HomePage from './pages/Home';
 import AuthPage from './pages/Auth';
 import SendingsPage from './pages/Sendings';
 import TasksPage from './pages/Tasks';
+import TodayPage from './pages/Today';
 import MainNavigation from './components/Navigation/MainNavigation';
 import Sidebar from './components/Sidebar/Sidebar';
 import AuthContext from './context/auth-context';
@@ -52,6 +53,7 @@ class App extends Component {
                                 {this.state.token && <Redirect from="/auth" to="/tasks" exact/>}
                                 {!this.state.token && <Route path="/auth" component={AuthPage}/>}
                                 {this.state.token && <Route path="/tasks" component={TasksPage}/>}
+                                {this.state.token && <Route path="/today" component={TodayPage}/>}
                                 {this.state.token && <Route path="/sendings" component={SendingsPage}/>}
                                 {!this.state.token && <Redirect to="/auth" exact/>}
                             </Switch>

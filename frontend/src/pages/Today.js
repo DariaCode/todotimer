@@ -1,5 +1,5 @@
 /* ----------------------------------------------------
-React.js / Tasks page component
+React.js / Today page component
 
 Updated: 04/17/2020
 Author: Daria Vodzinskaia
@@ -20,7 +20,7 @@ import TextField from '@material-ui/core/TextField';
 import './Tasks.css';
 
 
-class TasksPage extends Component {
+class TodayPage extends Component {
     state = {
         creating: false,
         updating: false,
@@ -161,9 +161,11 @@ class TasksPage extends Component {
             }
             return res.json();
         }).then(resData => {
+            const today = new Date().toISOString();
             const tasks = resData.data.tasks;
+            const filteredTasks = tasks.filter((task) => task.date <= today);
             if (this.isActive) {
-                this.setState({tasks: tasks, isLoading: false});
+                this.setState({tasks: filteredTasks, isLoading: false});
             }
         }).catch(err => {
             console.log(err);
@@ -460,4 +462,4 @@ class TasksPage extends Component {
     }
 };
 
-export default TasksPage;
+export default TodayPage;
