@@ -28,11 +28,11 @@ module.exports = {
     createTask: async(args, req) => {
         if (!req.isAuth) {
             throw new Error('Unauthenticated');
-        }
+        } 
         const task = new Task({
             title: args.taskInput.title,
             priority: + args.taskInput.priority,
-            date: new Date(args.taskInput.date),
+            date: args.taskInput.date,
             complete: args.taskInput.complete,
             creator: req.userId
         });
@@ -78,7 +78,7 @@ module.exports = {
                 $set: {
                     title: task.title,
                     priority: +task.priority,
-                    date: new Date(task.date),
+                    date: task.date,
                 }
             })
                 .exec();

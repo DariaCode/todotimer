@@ -18,10 +18,10 @@ const taskSchema = new Schema({
         required: true
     }, 
     date: {
-        type: Date
+        type: Array
     },
     complete: {
-        type: Boolean,
+        type: Array,
         required: true
     },
     creator: {

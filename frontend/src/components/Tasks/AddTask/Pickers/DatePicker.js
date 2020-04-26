@@ -1,3 +1,10 @@
+/* ----------------------------------------------------
+React.js / Date Picker component
+
+Updated: 04/17/2020
+Author: Daria Vodzinskaia
+Website: www.dariacode.dev
+-------------------------------------------------------  */
 import 'date-fns';
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';

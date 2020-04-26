@@ -15,6 +15,7 @@ import Spinner from '../components/Spinner/Spinner';
 import AddTask from '../components/Tasks/AddTask/AddTask';
 import PriorityPopper from '../components/Tasks/AddTask/Popper/Popper';
 import DatePicker from '../components/Tasks/AddTask/Pickers/DatePicker';
+import RepeatTask from '../components/Tasks/AddTask/Repeat/Repeat'
 import TextField from '@material-ui/core/TextField';
 
 import './Tasks.css';
@@ -39,6 +40,7 @@ class TasksPage extends Component {
         this.titleElRef = React.createRef();
         this.priorityElRef = React.createRef();
         this.dateElRef = React.createRef();
+        this.dateRepeatElRef = React.createRef();
         this.completeElRef = React.createRef();
     }
 
@@ -56,36 +58,47 @@ class TasksPage extends Component {
         this.setState({creating: false});
         const title = this.titleElRef.current.value;
         const priority = +this.priorityElRef.current.value;
-        let date = this.dateElRef.current.value;
-        // to check input data isn't empty.
+        let date = [this.dateElRef.current.value];
+        let dateRepeat = new Array(this.dateRepeatElRef.current.value);
+        console.log("dateRepeat from currect.value", dateRepeat);
+        // to check input some data isn't empty.
+        // trim()-remove whitespace from both sides of a string.
         if (title.trim().length === 0 || priority <= 0 ) {
             return;
         };
-        if (date.trim().length === 0) {
-            date = new Date(parseInt('2000-01-01T05:00:00.000Z')).toISOString();
+        if (date.length === 0 && dateRepeat.length === 0) {
+            date = [new Date(parseInt('2000-01-01T05:00:00.000Z')).toISOString()];
         };
+        if (dateRepeat.length > 1) {
+            date = dateRepeat;
+        }
+        let complete = new Array(date.length).fill(false);
         // the task is an object with properties title: title, priority: priority, etc.
         const task = {
             title,
             priority,
-            date
+            date,
+            complete
         };
+        console.log("check if object task is rigth: ", task)
 
         const requestBody = {
-            query: `
-                mutation CreateTask($title: String!, $priority: Float!, $date: String) {
-                    createTask(taskInput: {title: $title, priority: $priority, date: $date, complete: false}) {
+            query: `Vs
+                mutation CreateTask($title: String!, $priority: Float!, $date: [String], $complete: [Boolean!]) {
+                    createTask(taskInput: {title: $title, priority: $priority, date: $date, complete: $complete) {
                         _id
                         title
                         priority
                         date
+                        complete
                     }
                 }
             `,
             variables: {
                 title: title,
                 priority: priority,
-                date: date
+                date: date,
+                complete: complete
             }
         };
 
@@ -111,7 +124,7 @@ class TasksPage extends Component {
                     title: resData.data.createTask.title,
                     priority: resData.data.createTask.priority,
                     date: resData.data.createTask.date,
-                    complete: false,
+                    complete: resData.data.createTask.complete,
                     creator: {
                         _id: this.context.userId
                     }
@@ -162,6 +175,7 @@ class TasksPage extends Component {
             return res.json();
         }).then(resData => {
             const tasks = resData.data.tasks;
+            console.log(tasks);
             if (this.isActive) {
                 this.setState({tasks: tasks, isLoading: false});
             }
@@ -426,6 +440,7 @@ class TasksPage extends Component {
                         <PriorityPopper
                         ref={this.priorityElRef} />
                         <DatePicker ref={this.dateElRef} />
+                        <RepeatTask ref={this.dateRepeatElRef} />
                         </div>
                     </form>
                 </AddTask>}

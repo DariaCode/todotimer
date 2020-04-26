@@ -13,8 +13,8 @@ type Task {
     _id: ID! 
     title: String!
     priority: Float!
-    date: String
-    complete: Boolean!
+    date: [String]
+    complete: [Boolean!]
     creator: User!
 } 
 
@@ -42,14 +42,14 @@ type Sending {
 input TaskInput {
     title: String!
     priority: Float!
-    date: String
-    complete: Boolean!
+    date: [String]
+    complete: [Boolean!]
 }
 
 input UpdateTaskInput {
     title: String
     priority: Float
-    date: String
+    date: [String]
 }
 
 input UserInput {
