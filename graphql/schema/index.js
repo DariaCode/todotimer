@@ -6,15 +6,19 @@ Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
-const { buildSchema } = require('graphql');
+const {buildSchema} = require('graphql');
 
 module.exports = buildSchema(` 
 type Task {
     _id: ID! 
     title: String!
     priority: Float!
-    date: [String]
-    complete: [Boolean!]
+    date: String
+    complete: Boolean!
+    start: String
+    end: String
+    intervalK: Float
+    intervalN: String
     creator: User!
 } 
 
@@ -42,14 +46,18 @@ type Sending {
 input TaskInput {
     title: String!
     priority: Float!
-    date: [String]
-    complete: [Boolean!]
+    date: String
+    complete: Boolean!
+    start: String
+    end: String
+    intervalK: Float
+    intervalN: String
 }
 
 input UpdateTaskInput {
     title: String
     priority: Float
-    date: [String]
+    date: String
 }
 
 input UserInput {

@@ -21,13 +21,10 @@ import {ReactComponent as RepeatIcon} from './repeat.svg';
 import './Repeat.css';
 
 const repeatTask = React.forwardRef((props, ref) => {
-
     const [selectedStartDate,
         setSelectedStartDate] = React.useState(new Date().toISOString());
-    console.log(selectedStartDate);
     const [selectedEndDate,
         setSelectedEndDate] = React.useState(new Date().toISOString());
-    console.log(selectedEndDate);
     const [anchorEl,
         setAnchorEl] = React.useState(null);
     const [dateArray,
@@ -35,10 +32,8 @@ const repeatTask = React.forwardRef((props, ref) => {
     console.log(dateArray);
     const [frequencyK,
         setFrequencyK] = React.useState(1);
-    console.log(frequencyK);
     const [frequencyN,
         setFrequencyN] = React.useState();
-    console.log(frequencyN);
 
     const handleClick = event => {
         setAnchorEl(anchorEl
@@ -62,7 +57,7 @@ const repeatTask = React.forwardRef((props, ref) => {
     }
 
     const handleDaily = date => {
-        var dateArr = getDayArray(selectedStartDate, selectedEndDate, 1, 1);
+        var dateArr = [selectedStartDate, selectedEndDate, 1, "day"];
         setDateArray(dateArr);
         setAnchorEl(anchorEl
             ? null
@@ -70,7 +65,7 @@ const repeatTask = React.forwardRef((props, ref) => {
     };
 
     const handleWeekly = date => {
-        var dateArr = getDayArray(selectedStartDate, selectedEndDate, 1, 7);
+        var dateArr = [selectedStartDate, selectedEndDate, 1, "week"];
         setDateArray(dateArr);
         setAnchorEl(anchorEl
             ? null
@@ -78,7 +73,7 @@ const repeatTask = React.forwardRef((props, ref) => {
     };
 
     const handleMonthly = date => {
-        var dateArr = getMonthArray(selectedStartDate, selectedEndDate, 1);
+        var dateArr = [selectedStartDate, selectedEndDate, 1, "month"];
         setDateArray(dateArr);
         setAnchorEl(anchorEl
             ? null
@@ -86,45 +81,12 @@ const repeatTask = React.forwardRef((props, ref) => {
     };
 
     const handleYearly = date => {
-        var dateArr = getYearArray(selectedStartDate, selectedEndDate, 1);
+        var dateArr = [selectedStartDate, selectedEndDate, 1, "year"];
         setDateArray(dateArr);
         setAnchorEl(anchorEl
             ? null
             : date.currentTarget);
     };
-
-    var getDayArray = function (start, end, k, n) {
-        var arr = [];
-        var dt = new Date(start);
-        var ed = new Date(end);
-        while (dt <= ed) {
-            arr.push(new Date(dt).toISOString());
-            dt.setDate(dt.getDate() + (k * n));
-        }
-        return arr;
-    }
-
-    var getMonthArray = function (start, end, k) {
-        var arr = new Array();
-        var dt = new Date(start);
-        var ed = new Date(end);
-        while (dt <= ed) {
-            arr.push(new Date(dt).toISOString());
-            dt.setMonth(dt.getMonth() + k);
-        }
-        return arr;
-    }
-
-    var getYearArray = function (start, end, k) {
-        var arr = new Array();
-        var dt = new Date(start);
-        var ed = new Date(end);
-        while (dt <= ed) {
-            arr.push(new Date(dt).toISOString());
-            dt.setFullYear(dt.getFullYear() + k);
-        }
-        return arr;
-    }
 
     const handleFrequencyK = event => {
         setDateArray([]);
@@ -148,17 +110,8 @@ const repeatTask = React.forwardRef((props, ref) => {
     };
     const handleOk = date => {
         let dateArr;
-        switch(frequencyN){
-            case 30:
-                dateArr = getMonthArray(selectedStartDate, selectedEndDate, frequencyK);
-                break;
-            case 360:
-                dateArr = getYearArray(selectedStartDate, selectedEndDate, frequencyK);
-                break;
-            default:
-                dateArr = getDayArray(selectedStartDate, selectedEndDate, frequencyK, frequencyN);    
-        };
-
+        dateArr= new Array(selectedStartDate, selectedEndDate, frequencyK, frequencyN);
+        console.log("new dateArray:", dateArr)
         setDateArray(dateArr);
         setAnchorEl(anchorEl
             ? null
@@ -172,8 +125,8 @@ const repeatTask = React.forwardRef((props, ref) => {
                 display: "none"
             }}
                 ref={ref}
-                {...props}
-                value={dateArray}></input>
+                 {...props}
+                 value={dateArray}></input>
 
             <IconButton
                 aria-describedby={id}
@@ -231,10 +184,10 @@ const repeatTask = React.forwardRef((props, ref) => {
                             value={frequencyN}
                             onChange={handleFrequencyN}
                             label="Set Repeat">
-                            <MenuItem value={1}>Day</MenuItem>
-                            <MenuItem value={7}>Week</MenuItem>
-                            <MenuItem value={30}>Month</MenuItem>
-                            <MenuItem value={360}>Year</MenuItem>
+                            <MenuItem value={"day"}>Day</MenuItem>
+                            <MenuItem value={"week"}>Week</MenuItem>
+                            <MenuItem value={"month"}>Month</MenuItem>
+                            <MenuItem value={"year"}>Year</MenuItem>
                         </Select>
                     </div>
                     <Button onClick={handleClear} variant="outlined" color="primary">Clear</Button>

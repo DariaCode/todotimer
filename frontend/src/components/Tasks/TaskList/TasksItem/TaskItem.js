@@ -1,4 +1,5 @@
 import React from 'react';
+
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -25,13 +26,6 @@ const TaskItem = props => {
 
     const handleClose = () => {
         setAnchorEl(null);
-    };
-
-    var options = {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
     };
 
     let priority = props.priority;
@@ -64,8 +58,8 @@ const TaskItem = props => {
                     </IconButton>
                     {currentIcon}
                     {props.title}
-                    <p>{props.date !== '1970-01-01T00:00:02.000Z'
-                        ? new Date(props.date).toLocaleDateString("en-US", options)
+                    <p>{props.date !== null
+                        ? props.date
                         : ''}</p>
                 </h1>
             </div>

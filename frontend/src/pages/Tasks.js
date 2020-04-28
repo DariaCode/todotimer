@@ -58,39 +58,55 @@ class TasksPage extends Component {
         this.setState({creating: false});
         const title = this.titleElRef.current.value;
         const priority = +this.priorityElRef.current.value;
-        let date = [this.dateElRef.current.value];
-        let dateRepeat = new Array(this.dateRepeatElRef.current.value);
-        console.log("dateRepeat from currect.value", dateRepeat);
+        let date = this.dateElRef.current.value;
+        let dateRepeat = this.dateRepeatElRef.current.value.split(",");
+        let start = null;
+        let end = null;
+        let intervalK = null;
+        let intervalN = null;
+        if(dateRepeat.length > 1){
+            start = new Date(dateRepeat[0]).toISOString();
+            end = new Date(dateRepeat[1]).toISOString();
+            intervalK = parseInt(dateRepeat[2]);
+            intervalN = dateRepeat[3];
+            date = start;
+        } 
+        console.log(dateRepeat);
         // to check input some data isn't empty.
         // trim()-remove whitespace from both sides of a string.
         if (title.trim().length === 0 || priority <= 0 ) {
             return;
         };
-        if (date.length === 0 && dateRepeat.length === 0) {
-            date = [new Date(parseInt('2000-01-01T05:00:00.000Z')).toISOString()];
+        
+        if (date.length === 0) {
+            date = null;
         };
-        if (dateRepeat.length > 1) {
-            date = dateRepeat;
-        }
-        let complete = new Array(date.length).fill(false);
+
         // the task is an object with properties title: title, priority: priority, etc.
         const task = {
             title,
             priority,
             date,
-            complete
+            start,
+            end,
+            intervalK,
+            intervalN
         };
-        console.log("check if object task is rigth: ", task)
+        console.log("check if the task object is rigth: ", task)
 
         const requestBody = {
-            query: `Vs
-                mutation CreateTask($title: String!, $priority: Float!, $date: [String], $complete: [Boolean!]) {
-                    createTask(taskInput: {title: $title, priority: $priority, date: $date, complete: $complete) {
+            query: `
+                mutation CreateTask($title: String!, $priority: Float!, $date: String, $start: String, $end: String, $intervalK: Float, $intervalN: String) {
+                    createTask(taskInput: {title: $title, priority: $priority, date: $date, complete: false, start: $start, end: $end, intervalK: $intervalK, intervalN: $intervalN}) {
                         _id
                         title
                         priority
                         date
                         complete
+                        start
+                        end
+                        intervalK
+                        intervalN
                     }
                 }
             `,
@@ -98,7 +114,10 @@ class TasksPage extends Component {
                 title: title,
                 priority: priority,
                 date: date,
-                complete: complete
+                start: start,
+                end: end,
+                intervalK: intervalK,
+                intervalN: intervalN
             }
         };
 
@@ -119,11 +138,12 @@ class TasksPage extends Component {
         }).then(resData => {
             this.setState(prevState => {
                 const updatedTasks = [...prevState.tasks];
+                console.log("resData after save: ", resData.data.createTask);
                 updatedTasks.push({
                     _id: resData.data.createTask._id,
                     title: resData.data.createTask.title,
                     priority: resData.data.createTask.priority,
-                    date: resData.data.createTask.date,
+                    date: resData.data.createTask.date === "1970-01-01T00:00:00.000Z"? null:resData.data.createTask.date,
                     complete: resData.data.createTask.complete,
                     creator: {
                         _id: this.context.userId
@@ -152,6 +172,10 @@ class TasksPage extends Component {
                     priority
                     date
                     complete
+                    start
+                    end
+                    intervalK
+                    intervalN
                     creator {
                         _id
                         email
@@ -174,7 +198,15 @@ class TasksPage extends Component {
             }
             return res.json();
         }).then(resData => {
-            const tasks = resData.data.tasks;
+            const tasks = resData.data.tasks.map(task => {
+                if(task.date === "1970-01-01T00:00:00.000Z"){
+                    task.date = null;
+                } else{
+                    task.date = new Date(task.date).toISOString();
+                }
+                return task;
+
+            });
             console.log(tasks);
             if (this.isActive) {
                 this.setState({tasks: tasks, isLoading: false});
@@ -285,7 +317,7 @@ class TasksPage extends Component {
                 const taskIndex = updatedTasks.findIndex((task => task._id === resData.data.updateTask._id));
                 updatedTasks[taskIndex].title = resData.data.updateTask.title;
                 updatedTasks[taskIndex].priority = resData.data.updateTask.priority;
-                updatedTasks[taskIndex].date = new Date(parseInt(resData.data.updateTask.date)).toISOString();
+                updatedTasks[taskIndex].date = resData.data.updateTask.date;
                 return {tasks: updatedTasks, updatedTask: null};
             });
 
@@ -331,6 +363,7 @@ class TasksPage extends Component {
                 const updatedTasks = [...prevState.tasks];
                 console.log(updatedTasks);
                 const taskIndex = updatedTasks.findIndex((task => task._id === resData.data.completeTask._id));
+                updatedTasks[taskIndex].date = new Date(parseInt(resData.data.completeTask.date)).toISOString();
                 updatedTasks[taskIndex].complete = resData.data.completeTask.complete;
                 return {tasks: updatedTasks};
             });
@@ -457,7 +490,7 @@ class TasksPage extends Component {
                         : "confirm"}>
                         <h1>{this.state.selectedTask.title}</h1>
                         <h2>{this.state.selectedTask.price}
-                            - {new Date(this.state.selectedTask.date).toLocaleDateString()}</h2>
+                            - {this.state.selectedTask.date}</h2>
                     </Modal>
                 )}
 

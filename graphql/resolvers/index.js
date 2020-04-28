@@ -11,9 +11,9 @@ const tasksResolver = require('./tasks');
 const sendingResolver = require('./sending');
 
 const rootResolver = {
-    ...authResolver,
-    ...tasksResolver,
-    ...sendingResolver
+  ...authResolver,
+  ...tasksResolver,
+  ...sendingResolver,
 };
 
 module.exports = rootResolver;

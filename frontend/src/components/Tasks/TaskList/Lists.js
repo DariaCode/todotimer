@@ -8,17 +8,23 @@ Website: www.dariacode.dev
 
 import React from 'react';
 
+import { formatISO, startOfToday } from 'date-fns';
 import DayList from './DayList';
 import './TaskList.css';
 
 const lists = props => {
     const lists = props.tasks.reduce((lists,task) => {
-        let date = task.date.split('T')[0];
-        const today = new Date().toISOString().split('T')[0];
-        const withoutDate = new Date("1970-01-01").toISOString().split('T')[0]
-        if(date < today && date !== withoutDate){
-            date = new Date("2000-01-01").toISOString().split('T')[0];
+        let date = task.date;
+        const today = formatISO(new Date(startOfToday()), { representation: 'date' });
+        if(task.complete){
+            date = "Complete";
+        }
+        if(task.date < today && date !== null && date !== "Complete"){
+            date = "Overdue";
         } 
+        if( date !== null && date !== "Overdue" && date !== "Complete"){
+            date = task.date.split('T')[0];
+        }
         if(!lists[date]) {
             lists[date] = [];
         }
@@ -31,12 +37,21 @@ const lists = props => {
             tasks: lists[date]
         }
     });
-    const sortedLists = listsGroups.sort(function compare(a, b) {
-        var dateA = new Date(a.date);
-        var dateB = new Date(b.date);
-        return dateA - dateB;
-      });
-    console.log(listsGroups);
+
+    let sortedLists =[];
+    let withoutDate = listsGroups.find(list => list.date === "null");
+    if(withoutDate){sortedLists.push(withoutDate)};
+    let overdueDate = listsGroups.find(list => list.date === "Overdue");
+    if(overdueDate){sortedLists.push(overdueDate)};
+    let otherDate = listsGroups.filter(list => list.date !== "null" && list.date !== "Overdue" && list.date !== "Complete");
+    otherDate.sort(function(a,b){
+        return new Date(a.date) - new Date(b.date)
+      }) ;
+    if(otherDate){sortedLists = sortedLists.concat(otherDate)};
+    let completeDate = listsGroups.find(list => list.date === "Complete");
+    if(completeDate){sortedLists = sortedLists.concat(completeDate)};
+    console.log(sortedLists);
+
     const listsPerDays = sortedLists.map(task => {
         return (
             <DayList

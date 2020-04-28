@@ -27,6 +27,7 @@ const dayLists = props => {
             onComplete={props.onCompleteTask} />
         )
     });
+    
     const today = new Date().toISOString().split('T')[0];
     const draftTomorrow = new Date(today);
     const formatTomorrow = draftTomorrow.setDate(draftTomorrow.getDate() + 1);
@@ -34,7 +35,7 @@ const dayLists = props => {
 
     return (
     <ul className="task__list">
-        {props.date === today? "Today" : props.date === tomorrow? "Tomorrow": props.date === "1970-01-01"? " ": props.date === "2000-01-01"? "Overdue" : props.date}
+        {props.date === today? "Today" : props.date === tomorrow? "Tomorrow": props.date === "null" ? " ": props.date}
         {list}
     </ul>)
 };

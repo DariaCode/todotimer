@@ -5,4 +5,4 @@ Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 
-exports.dateToString = date => new Date(date).toISOString();
+exports.dateToString = (date) => new Date(date).toISOString();
