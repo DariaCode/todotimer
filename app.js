@@ -42,12 +42,7 @@ app.use('/graphql', graphqlHttp({
   graphiql: true, // for testing
 }));
 
-/*
-MUST CHANGE IT!!!!!
-mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-mthik.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`);
-*/
-
-mongoose.connect(`mongodb+srv://dariacode:Willy1109@cluster0-mthik.gcp.mongodb.net/timer-app?retryWrites=true&w=majority`, {
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_ADDR}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {

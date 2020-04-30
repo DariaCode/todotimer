@@ -7,6 +7,7 @@ Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 const jwt = require('jsonwebtoken');
+const process = require('process');
 
 module.exports = (req, res, next) => {
   // to checking header and then token in it.
@@ -19,11 +20,12 @@ module.exports = (req, res, next) => {
   const token = authHeader.split(' ')[1]; // Authorization: Bearer token
   if (!token || token === '') {
     req.isAuth = false;
+    console.log('this is env2', process.env.TOKEN);
     return next();
   }
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, 'willyisthebestdog');
+    decodedToken = jwt.verify(token, process.env.TOKEN);
   } catch (err) {
     req.isAuth = false;
     return next();

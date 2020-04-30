@@ -8,6 +8,7 @@ Website: www.dariacode.dev
 
 const bcrypt = require('bcryptjs'); // to encrypt the passwords in the database
 const jwt = require('jsonwebtoken'); // to generate JSON web token
+const process = require('process');
 
 const User = require('../../models/user');
 
@@ -22,7 +23,7 @@ module.exports = {
       if (existingUser) {
         throw new Error('User exists already');
       }
-      const hashedPassword = await bcrypt.hash(args.userInput.password, 9);
+      const hashedPassword = await bcrypt.hash(args.userInput.password, process.env.BCRYPT);
 
       const user = new User({
         email: args.userInput.email,
@@ -55,7 +56,7 @@ module.exports = {
     const token = jwt.sign({
       userId: user.id,
       email: user.email,
-    }, 'willyisthebestdog', {
+    }, process.env.TOKEN, {
       expiresIn: '1h',
     });
     return {
