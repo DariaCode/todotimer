@@ -1,9 +1,0 @@
-{
-    "env": {
-        "MONGO_USER": "dariacode",
-        "MONGO_PASSWORD": "Harry21Potter",
-        "MONGO_ADDR": "cluster0-mthik.gcp.mongodb.net/todotimer-app?retryWrites=true&w=majority",
-        "TOKEN": "Lord45Voldemort",
-        "BCRYPT": "104"
-    }
-}
