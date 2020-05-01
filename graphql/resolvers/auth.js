@@ -21,9 +21,12 @@ module.exports = {
         email: args.userInput.email,
       });
       if (existingUser) {
+        console.log('this is number env.BCRYPT1 ', process.env.BCRYPT, typeof process.env.BCRYPT);
         throw new Error('User exists already');
       }
-      const hashedPassword = await bcrypt.hash(args.userInput.password, process.env.BCRYPT);
+      console.log('this is number env.BCRYPT1 ', process.env.BCRYPT, typeof process.env.BCRYPT);
+      const hashedPassword = await bcrypt.hash(args.userInput.password, parseInt(process.env.BCRYPT));
+      console.log('this is hash ', hashedPassword, parseInt(process.env.BCRYPT));
 
       const user = new User({
         email: args.userInput.email,

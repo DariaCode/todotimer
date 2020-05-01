@@ -20,7 +20,6 @@ module.exports = (req, res, next) => {
   const token = authHeader.split(' ')[1]; // Authorization: Bearer token
   if (!token || token === '') {
     req.isAuth = false;
-    console.log('this is env2', process.env.TOKEN);
     return next();
   }
   let decodedToken;
