@@ -1,9 +1,11 @@
 /* ----------------------------------------------------
 Node.js / Task's schema for MongoDB
-Updated: 04/27/2020
+
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
+
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
-React.js / Tasks page component
+React.js / Tasks page component 
 
-Updated: 04/17/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -19,7 +19,6 @@ import RepeatTask from '../components/Tasks/AddTask/Repeat/Repeat'
 import TextField from '@material-ui/core/TextField';
 
 import './Tasks.css';
-
 
 class TasksPage extends Component {
     state = {

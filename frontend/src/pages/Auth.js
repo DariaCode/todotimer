@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Auth component
 
-Updated: 03/13/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import AuthContext from '../context/auth-context';
 
+// Material-UI components (https://material-ui.com/)
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import {withStyles} from '@material-ui/core/styles';
@@ -20,8 +21,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import FormHelperText from '@material-ui/core/FormHelperText';
-
+import Alert from '@material-ui/lab/Alert';
 
 function Copyright() {
     return (
@@ -35,11 +35,12 @@ function Copyright() {
     );
 }
 
+// Style for Material-UI components
 const styles = (theme) => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '100vh'
+        minHeight: '92vh'
     },
     paper: {
         marginTop: theme.spacing(14),
@@ -68,11 +69,12 @@ const styles = (theme) => ({
 });
 
 class AuthPage extends Component {
-     state = {
-         isLogin: true
-     }
+    state = {
+        isLogin: true,
+        showError: ""
+    }
 
-    //to add access to context data.
+    // To add access to context data.
     static contextType = AuthContext;
 
     constructor(props) {
@@ -80,6 +82,7 @@ class AuthPage extends Component {
         this.emailEl = React.createRef();
         this.passwordEl = React.createRef();
     }
+
     switchModeHandler = () => {
         this.setState(prevState => {
             return {
@@ -92,12 +95,13 @@ class AuthPage extends Component {
         event.preventDefault();
         const email = this.emailEl.current.value;
         const password = this.passwordEl.current.value;
-        console.log(email, password, typeof email, typeof password, this.emailEl.current.value);
-        // length without spaces - trim()
+
+        // The trim() method removes whitespace from both sides of a string
         if (email.trim().length === 0 || password.trim().length === 0) {
             return;
         }
 
+        // To create body for POST request for login
         let requestBody = {
             query: `
                 query Login($email: String!, $password: String!) {
@@ -114,6 +118,7 @@ class AuthPage extends Component {
             }
         };
 
+        // To create body for POST request for creating a user.
         if (!this.state.isLogin) {
             requestBody = {
                 query: `
@@ -139,8 +144,25 @@ class AuthPage extends Component {
             }
         }).then(res => {
             if (res.status !== 200 && res.status !== 201) {
+                // To handle error message.
                 let showError = res.json();
-                showError.then(val => console.log(val.errors[0].message));
+                showError.then(val => {
+                    switch (val.errors[0].message) {
+                        case "Password is incorrect":
+                            this.setState({showError: "Password is incorrect"})
+                            break;
+                        case "User does not exist":
+                            this.setState({showError: "User does not exist"})
+                            break;
+                        case "User exists already":
+                            this.setState({showError: "User exists already"})
+                            break;
+                        default:
+                            this.setState({showError: ""})
+                    }
+                    console.log('this state ', this.state.showError);
+                    console.log('val of error from res', val.errors[0].message)
+                });
                 throw new Error('Failed');
             }
             return res.json();
@@ -162,10 +184,10 @@ class AuthPage extends Component {
             <div className={classes.root}>
                 <CssBaseline/>
                 <Container component="main" maxWidth="xs">
-                    {/* component="main"- default is "div" 
+                    {/* component="main"- default is "div"
                     <CssBaseline/> */}
                     <div className={classes.paper}>
-                        {/* CHANGE THE AVATAR FOR THE LOGO ICON */}
+                        {/* CHANGE THE AVATAR FOR THE LOGO ICON!!! */}
                         <Avatar className={classes.avatar}>
                             <LockOutlinedIcon/>
                         </Avatar>
@@ -199,6 +221,13 @@ class AuthPage extends Component {
                                 autoComplete="current-password"
                                 type="password"
                                 inputRef={this.passwordEl}/>
+
+                                {this.state.showError &&
+                                <Alert 
+                                severity="error">
+                                {this.state.showError}
+                                </Alert>}
+
                             <Button
                                 type="submit"
                                 fullWidth
@@ -219,7 +248,7 @@ class AuthPage extends Component {
                                     <Link
                                         className={classes.switch}
                                         onClick={this.switchModeHandler}
-                                        variant="body2">
+                                        variant="body">
                                         {this.state.isLogin
                                             ? "Don't have an account? Signup"
                                             : "Already have an account? Login"}
@@ -239,6 +268,7 @@ class AuthPage extends Component {
     }
 }
 
+// To apply the styles given above for Material-UI components.
 AuthPage.propTypes = {
     classes: PropTypes.object.isRequired
 };

@@ -10,7 +10,6 @@ import React from 'react';
 
 import {formatISO, startOfToday} from 'date-fns';
 import DayList from './DayList';
-import './TaskList.css';
 
 const lists = (props) => {
   const lists = props.tasks.reduce((lists, task) => {

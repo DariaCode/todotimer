@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
-Node.js / schema for GraphQL
+Node.js / Schema for GraphQL
 
-Updated: 03/11/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -35,14 +35,6 @@ type AuthData {
     tokenExpiration: Int!
 }
 
-type Sending {
-    _id: ID!
-    task: Task!
-    user: User!
-    createdAt: String!
-    updatedAt: String!
-}
-
 input TaskInput {
     title: String!
     priority: Float!
@@ -67,14 +59,12 @@ input UserInput {
 
 type RootQuery {
     tasks: [Task!]!
-    sendings: [Sending!]!
     login(email: String!, password: String!): AuthData!
 }
 
 type RootMutation {
     createTask(taskInput: TaskInput): Task
     createUser(userInput: UserInput): User
-    sendTask(taskId: ID!): Sending!
     cancelSending(sendingId: ID!): Task!
     updateTask(taskId: ID!, taskInput: UpdateTaskInput): Task!
     completeTask(taskId: ID!): Task!

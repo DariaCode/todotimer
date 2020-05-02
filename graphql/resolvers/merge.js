@@ -1,10 +1,11 @@
 /* ----------------------------------------------------
-Node.js / merge functions for GraphQL
+Node.js / Merge functions for GraphQL
 
-Updated: 03/10/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
+
 const DataLoader = require('dataloader'); // to prevent duplicate requests
 
 const Task = require('../../models/task');
@@ -26,8 +27,8 @@ const userLoader = new DataLoader((userIds) => {
 });
 
 // tasks() and user() help to avoid infinite loop.
-// $in is the special operator in mongoDB syntax
-// to find all tasks with id.
+
+// $in is the special operator in mongoDB syntax to find all tasks with id.
 const tasks = async (taskIds) => {
   try {
     const tasks = await Task.find({
@@ -37,7 +38,8 @@ const tasks = async (taskIds) => {
     });
     // to sort the tasks to the same order with taskIds
     tasks.sort((a, b) => {
-      return taskIds.indexOf(a._id.toString()) - taskIds.indexOf(b._id.toString());
+      return taskIds.indexOf(a._id.toString()) -
+      taskIds.indexOf(b._id.toString());
     });
     return tasks.map((task) => {
       return transformTask(task);
@@ -48,7 +50,7 @@ const tasks = async (taskIds) => {
 };
 
 // This function acts like .population(), mongoose's method that adds relation
-// In this case - user's(creator's) info to the task
+// In this case - add user's(creator's) info to the task
 const user = async (userId) => {
   try {
     // instead of using User.findById(userId) we use the dataloader
@@ -59,17 +61,6 @@ const user = async (userId) => {
       createdTasks: () => taskLoader.loadMany(user._doc.createdTasks),
       password: null,
     };
-  } catch (err) {
-    throw err;
-  }
-};
-
-// A function for sending tasks
-const singleTask = async (taskId) => {
-  try {
-    // instead of using Task.findById(taskId) we use the dataloader
-    const task = await taskLoader.load(taskId.toString());
-    return task;
   } catch (err) {
     throw err;
   }
@@ -87,20 +78,4 @@ const transformTask = (task) => {
   };
 };
 
-const transformSending = (sending) => {
-  return {
-    ...sending._doc,
-    _id: sending.id,
-    user: user.bind(this, sending._doc.user),
-    task: singleTask.bind(this, sending._doc.task),
-    createdAt: dateToString(sending._doc.createdAt),
-    updatedAt: dateToString(sending._doc.updatedAt),
-  };
-};
-
-
-// exports.tasks = tasks;
-// exports.user = user;
-// exports.singleTask = singleTask;
 exports.transformTask = transformTask;
-exports.transformSending = transformSending;

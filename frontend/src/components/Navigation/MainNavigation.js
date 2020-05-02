@@ -1,50 +1,139 @@
 /* ----------------------------------------------------
 React.js / Navigation component
 
-Updated: 03/13/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import React from 'react';
-import {NavLink} from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
+import Sidebar from '../Sidebar/Sidebar';
 
-import './MainNavigation.css';
+// Material-UI components (https://material-ui.com/)
+import {makeStyles, useTheme} from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Hidden from '@material-ui/core/Hidden';
+import Drawer from '@material-ui/core/Drawer';
 
-const mainNavigation = props => {
-    return (
-        <AuthContext.Consumer>
-            {context => {
-                return (
-                    <header className="main-navigation">
-                        <div className="main-navigation__logo">
-                            <h1>Todo List</h1>
-                        </div>
-                        <div className="main-navigation__items">
-                            <ul>
-                                {!context.token && (
-                                    <li>
-                                        <NavLink to="/auth">Login</NavLink>
-                                    </li>
-                                )}
-                                {context.token && (
-                                    <React.Fragment>
-                                        <li>
-                                            <NavLink to="/sendings">Sendings</NavLink>
-                                        </li>
-                                        <li>
-                                            <button onClick={context.logout} className="btn_logout">Logout</button>
-                                        </li>
-                                    </React.Fragment>
-                                )}
-                            </ul>
-                        </div>
-                    </header>
-                );
-            }}
-        </AuthContext.Consumer>
-    )
-}
+const drawerWidth = 260;
 
-export default mainNavigation;
+// Style for Material-UI components
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexGrow: 1,
+  },
+  appBar: {
+    [theme.breakpoints.up('sm')]: {
+    // The drawer clipped under the app bar
+      zIndex: theme.zIndex.drawer + 1,
+    },
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
+  title: {
+    flexGrow: 1,
+  },
+  drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  // Necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
+  },
+}));
+
+// eslint-disable-next-line require-jsdoc
+export default function MainNavigation(props) {
+  const {window} = props;
+  const classes = useStyles();
+  const theme = useTheme();
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const container = window !== undefined ? () => window().document.body : undefined;
+
+  return (
+    <AuthContext.Consumer>
+      {(context) => {
+        return (
+          <div className={classes.root}>
+            <CssBaseline />
+            <AppBar position="static" className={classes.appBar}>
+              <Toolbar>
+                {context.token && (<IconButton
+                  edge="start"
+                  className={classes.menuButton}
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={handleDrawerToggle}>
+                  <MenuIcon />
+                </IconButton>)}
+                <Typography variant="h6" className={classes.title}>
+            Todo app
+                </Typography>
+                {!context.token &&
+                (<Button color="inherit">Login</Button>)}
+                {context.token &&
+                (<Button color="inherit" onClick={context.logout}>
+                    Logout
+                </Button>)}
+              </Toolbar>
+            </AppBar>
+            {context.token &&
+            (<nav className={classes.drawer} aria-label="tasks folders">
+              <Hidden smUp implementation="css">
+                <Drawer
+                  container={container}
+                  variant="temporary"
+                  anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                  open={mobileOpen}
+                  onClose={handleDrawerToggle}
+                  classes={{
+                    paper: classes.drawerPaper,
+                  }}
+                  ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
+                  }}
+                >
+                  {<Sidebar />}
+                </Drawer>
+              </Hidden>
+              <Hidden xsDown implementation="css">
+                <Drawer
+                  classes={{
+                    paper: classes.drawerPaper,
+                  }}
+                  variant="permanent"
+                  open
+                >
+                  {<div>
+                    <div className={classes.toolbar} />
+                    <Sidebar />
+                  </div>}
+                </Drawer>
+              </Hidden>
+            </nav>)}
+          </div>
+        );
+      }}
+    </AuthContext.Consumer>
+  );
+};

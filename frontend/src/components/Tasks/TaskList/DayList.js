@@ -8,7 +8,6 @@ Website: www.dariacode.dev
 import React from 'react';
 
 import TaskItem from './TasksItem/TaskItem';
-import './TaskList.css';
 
 const dayLists = (props) => {
   const list = props.tasks.map((task) => {

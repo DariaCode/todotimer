@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / User authentication resolver for GraphQL
 
-Updated: 03/10/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Main App.js
 
-Updated: 03/17/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -9,13 +9,10 @@ Website: www.dariacode.dev
 import React, {Component} from 'react';
 import {BrowserRouter, Route, Redirect, Switch} from 'react-router-dom';
 
-import HomePage from './pages/Home';
 import AuthPage from './pages/Auth';
-import SendingsPage from './pages/Sendings';
 import TasksPage from './pages/Tasks';
 import TodayPage from './pages/Today';
 import MainNavigation from './components/Navigation/MainNavigation';
-import Sidebar from './components/Sidebar/Sidebar';
 import AuthContext from './context/auth-context';
 
 class App extends Component {
@@ -27,18 +24,21 @@ class App extends Component {
     // componentDidMount() executes when the page loads = is invoked immediately
     // after a component is mounted (inserted into the tree).
     componentDidMount() {
-        console.log("App.componentDidMount: refreshing, then authenticating..");
+        // To check if there is token in user localStorage and 
+        // not to force user login again.
         this.refreshToken().then(result => {
             if (result) {
+                // The user is authenticated
                 let token = JSON.parse(localStorage.getItem("token"));
+                //To extract userId from the token 
                 let base64Url = token.split(".")[1];
                 const base64 = base64Url.replace("-", "+").replace("_", "/");
                 const tokenData = JSON.parse(atob(base64));
                 let userId = tokenData.userId;
                 this.setState({token: token, userId: userId});
-                console.log("App.componentDidMount: the user is authenticated");
             } else {
-                console.log("App.componentDidMount: the user is not authenticated");
+                // The user is not authenticated
+                console.log("ComponentDidMount: the user is not authenticated");
             }
         })
     }
@@ -46,10 +46,11 @@ class App extends Component {
     refreshToken = () => {
         const token = JSON.parse(localStorage.getItem("token"));
         if (token !== null) {
-                console.log("App.refreshToken: access token not expired, nothing to do.");
+            // TO MAKE FUNCTION FOR CHECKING THE TOKEN'S EXPIRATION DATE
+                console.log("refreshToken: access token not expired, nothing to do.");
                 return Promise.resolve(true);
         }
-        console.log("App.refreshToken: no tokens found in localStorage.");
+        // No tokens found in localStorage
         return Promise.resolve(false);
     };
 
@@ -69,9 +70,9 @@ class App extends Component {
     // and destroyed. Perform any necessary cleanup in this method, such as
     // invalidating timers, canceling network requests, or cleaning up any
     // subscriptions that were created in componentDidMount().
-    componentWillUnmount() {
+    // componentWillUnmount() {
 
-    }
+    // }
 
     render() {
         return (
@@ -86,14 +87,12 @@ class App extends Component {
                     }}>
                         <MainNavigation/>
                         <main className="main-content">
-                            {this.state.token && <Sidebar/>}
                             <Switch>
                                 {this.state.token && <Redirect from="/" to="/tasks" exact/>}
                                 {this.state.token && <Redirect from="/auth" to="/tasks" exact/>}
                                 {!this.state.token && <Route path="/auth" component={AuthPage}/>}
                                 {this.state.token && <Route path="/tasks" component={TasksPage}/>}
                                 {this.state.token && <Route path="/today" component={TodayPage}/>}
-                                {this.state.token && <Route path="/sendings" component={SendingsPage}/>}
                                 {!this.state.token && <Redirect to="/auth" exact/>}
                             </Switch>
                         </main>

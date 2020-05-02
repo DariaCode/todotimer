@@ -1,13 +1,14 @@
 /* ----------------------------------------------------
 Node.js / User's schema for MongoDB
-Updated: 03/10/2020
+
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
+
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
-
 
 const userSchema = new Schema({
   email: {
@@ -20,8 +21,10 @@ const userSchema = new Schema({
   },
   createdTasks: [ // array
     {
-      type: Schema.Types.ObjectId, // to store all tasks' IDs which this user have created
-      ref: 'Task', // the module from task.js
+      // to store all tasks' IDs which this user have created
+      type: Schema.Types.ObjectId,
+      // the module from task.js
+      ref: 'Task',
     },
   ],
 });

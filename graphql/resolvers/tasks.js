@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Task resolver for GraphQL
 
-Updated: 03/10/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -98,6 +98,7 @@ module.exports = {
     }
     try {
       const task = await Task.findById(args.taskId);
+      // To check if the task with repeat feature.
       if (task.end !== null) {
         let newTaskDate;
         const dt = new Date(task.date);
@@ -118,6 +119,8 @@ module.exports = {
           task.date = task.end;
           task.complete = true;
         } else {
+          // To assign the new date to this repeated task according
+          // to parameters intervalN and intervalK (see above).
           task.date = newTaskDate;
           task.complete = false;
         }
@@ -131,6 +134,8 @@ module.exports = {
             .exec();
         return await Task.findById(args.taskId);
       } else {
+        // This case if the task without repeat feature.
+        // To allow a user to mark task like done and undone.
         if (task.complete === false) {
           task.complete = true;
         } else {

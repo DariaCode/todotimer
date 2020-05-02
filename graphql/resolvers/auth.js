@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / User resolver for GraphQL
 
-Updated: 03/10/2020
+Updated: 05/01/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -21,12 +21,10 @@ module.exports = {
         email: args.userInput.email,
       });
       if (existingUser) {
-        console.log('this is number env.BCRYPT1 ', process.env.BCRYPT, typeof process.env.BCRYPT);
         throw new Error('User exists already');
       }
-      console.log('this is number env.BCRYPT1 ', process.env.BCRYPT, typeof process.env.BCRYPT);
-      const hashedPassword = await bcrypt.hash(args.userInput.password, parseInt(process.env.BCRYPT));
-      console.log('this is hash ', hashedPassword, parseInt(process.env.BCRYPT));
+      const hashedPassword = await bcrypt.hash(args.userInput.password,
+          parseInt(process.env.BCRYPT));
 
       const user = new User({
         email: args.userInput.email,
@@ -60,12 +58,12 @@ module.exports = {
       userId: user.id,
       email: user.email,
     }, process.env.TOKEN, {
-      expiresIn: '1h',
+      expiresIn: '1h', // CHANGE 1h EXPIRATION INTERVAL!!!
     });
     return {
       userId: user.id,
       token: token,
-      tokenExpiration: 1,
+      tokenExpiration: 1, // CHANGE 1h EXPIRATION INTERVAL!!!
     };
   },
 };
