@@ -81,7 +81,8 @@ class TasksPage extends Component {
             date = null;
         };
 
-        // the task is an object with properties title: title, priority: priority, etc.
+        // the task is an object with properties title: title, priority: 
+        // priority, etc.
         const task = {
             title,
             priority,
