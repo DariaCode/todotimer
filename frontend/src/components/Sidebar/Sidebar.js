@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Sidebar component
 
-Updated: 05/01/2020
+Updated: 05/05/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Sidebar() {
   const classes = useStyles();
   const [selectedIndex,
-    setSelectedIndex] = React.useState(1);
+    setSelectedIndex] = React.useState(0);
 
   const handleListItemClick = (_event, index) => {
     setSelectedIndex(index);

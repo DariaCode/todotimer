@@ -1,25 +1,62 @@
 /* ----------------------------------------------------
 React.js / Repeat Task component
 
-Updated: 04/22/2020
+Updated: 05/05/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import 'date-fns';
 import React from 'react';
+
+// Material-UI components (https://material-ui.com/)
+import {makeStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Popper from '@material-ui/core/Popper';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import {ReactComponent as RepeatIcon} from './repeat.svg';
 
-import './Repeat.css';
+// Style for Material-UI components
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: theme.spacing(1),
+  },
+  picker: {
+    margin: theme.spacing(0.5),
+  },
+  buttonBox: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  },
+  button: {
+    margin: theme.spacing(0.4),
+    minWidth: 121,
+  },
+  title: {
+    padding: theme.spacing(0.5),
+  },
+  number: {
+    maxWidth: 121,
+    margin: theme.spacing(0.5),
+  },
+  formControl: {
+    margin: theme.spacing(0.5),
+    minWidth: 121,
+  },
+}));
 
+// eslint-disable-next-line react/display-name
 const repeatTask = React.forwardRef((props, ref) => {
   const [selectedStartDate,
     setSelectedStartDate] = React.useState(new Date().toISOString());
@@ -34,6 +71,7 @@ const repeatTask = React.forwardRef((props, ref) => {
     setFrequencyK] = React.useState(1);
   const [frequencyN,
     setFrequencyN] = React.useState();
+  const classes = useStyles();
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ?
@@ -109,8 +147,7 @@ const repeatTask = React.forwardRef((props, ref) => {
             date.currentTarget);
   };
   const handleOk = (date) => {
-    let dateArr;
-    dateArr= new Array(selectedStartDate, selectedEndDate, frequencyK, frequencyN);
+    const dateArr = [selectedStartDate, selectedEndDate, frequencyK, frequencyN];
     console.log('new dateArray:', dateArr);
     setDateArray(dateArr);
     setAnchorEl(anchorEl ?
@@ -119,80 +156,130 @@ const repeatTask = React.forwardRef((props, ref) => {
   };
 
   return (
-    <div className="form-control">
-      <input
-        style={{
-          display: 'none',
-        }}
-        ref={ref}
-        {...props}
-        value={dateArray}></input>
-
+    <div>
       <IconButton
         aria-describedby={id}
         onClick={handleClick}
-        value={selectedStartDate}><RepeatIcon/></IconButton>
+        value={selectedStartDate}
+        ref={ref}>
+        <RepeatIcon/>
+      </IconButton>
       <Popper id={id} open={open} anchorEl={anchorEl} className="repeat-popper">
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            autoOk
-            variant="inline"
-            inputVariant="outlined"
-            label="Start"
-            format="MM/dd/yyyy"
-            margin="normal"
-            value={selectedStartDate}
-            InputAdornmentProps={{
-              position: 'start',
-            }}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-            onChange={(date) => handleStartDateChange(date)}/>
-          <KeyboardDatePicker
-            autoOk
-            variant="inline"
-            inputVariant="outlined"
-            label="End by"
-            format="MM/dd/yyyy"
-            value={selectedEndDate}
-            InputAdornmentProps={{
-              position: 'start',
-            }}
-            onChange={(date) => handleEndDateChange(date)}/>
-
-          <Button variant="outlined" onClick={handleDaily} color="primary">Daily</Button>
-          <Button variant="outlined" onClick={handleWeekly} color="primary">Weekly</Button>
-          <Button variant="outlined" onClick={handleMonthly} color="primary">Monthly</Button>
-          <Button variant="outlined" onClick={handleYearly} color="primary">Yearly</Button>
-          <h5>Custom</h5>
-          <div>
-            <TextField
-              id="outlined-number"
-              label="Every"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              defaultValue={frequencyK}
-              onClick
-                ={handleFrequencyK}
-              variant="outlined"/>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={frequencyN}
-              onChange={handleFrequencyN}
-              label="Set Repeat">
-              <MenuItem value={'day'}>Day</MenuItem>
-              <MenuItem value={'week'}>Week</MenuItem>
-              <MenuItem value={'month'}>Month</MenuItem>
-              <MenuItem value={'year'}>Year</MenuItem>
-            </Select>
-          </div>
-          <Button onClick={handleClear} variant="outlined" color="primary">Clear</Button>
-          <Button onClick={handleOk} variant="outlined" color="primary">Ok</Button>
-        </MuiPickersUtilsProvider>
+        <Paper>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <div className={classes.root}>
+              <KeyboardDatePicker
+                className={classes.picker}
+                autoOk
+                variant="inline"
+                inputVariant="outlined"
+                label="Start"
+                format="MM/dd/yyyy"
+                margin="normal"
+                value={selectedStartDate}
+                InputAdornmentProps={{
+                  position: 'start',
+                }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+                onChange={(date) => handleStartDateChange(date)}/>
+              <KeyboardDatePicker
+                className={classes.picker}
+                autoOk
+                variant="inline"
+                inputVariant="outlined"
+                label="End by"
+                format="MM/dd/yyyy"
+                value={selectedEndDate}
+                InputAdornmentProps={{
+                  position: 'start',
+                }}
+                onChange={(date) => handleEndDateChange(date)}/>
+              <div className={classes.buttonBox}>
+                <Button
+                  className={classes.button}
+                  variant="outlined"
+                  onClick={handleDaily}
+                  color="primary">
+                  Daily
+                </Button>
+                <Button
+                  className={classes.button}
+                  variant="outlined"
+                  onClick={handleWeekly}
+                  color="primary">
+                  Weekly
+                </Button>
+              </div>
+              <div className={classes.buttonBox}>
+                <Button
+                  className={classes.button}
+                  variant="outlined"
+                  onClick={handleMonthly}
+                  color="primary">
+                  Monthly
+                </Button>
+                <Button
+                  className={classes.button}
+                  variant="outlined"
+                  onClick={handleYearly}
+                  color="primary">
+                  Yearly
+                </Button>
+              </div>
+              <Typography
+                className={classes.title}>
+                Custom
+              </Typography>
+              <div>
+                <TextField
+                  className={classes.number}
+                  id="outlined-number"
+                  label="Every"
+                  type="number"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  defaultValue={frequencyK}
+                  onClick
+                    ={handleFrequencyK}
+                  variant="outlined"/>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel id="select-outlined-label">Set Repeat</InputLabel>
+                  <Select
+                    labelId="select-outlined-label"
+                    id="select-outlined"
+                    value={frequencyN}
+                    onChange={handleFrequencyN}
+                    label="Set Repeat"
+                    variant="outlined">
+                    <MenuItem value={'day'}>Day</MenuItem>
+                    <MenuItem value={'week'}>Week</MenuItem>
+                    <MenuItem value={'month'}>Month</MenuItem>
+                    <MenuItem value={'year'}>Year</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className={classes.buttonBox}>
+                <Button
+                  className={classes.button}
+                  onClick={handleOk}
+                  variant="contained"
+                  color="primary">
+                  Ok
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={handleClear}
+                  variant="outlined"
+                  color="secondary">
+                  Clear
+                </Button>
+              </div>
+            </div>
+          </MuiPickersUtilsProvider>
+        </Paper>
       </Popper>
     </div>
   );

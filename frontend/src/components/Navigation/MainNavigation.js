@@ -21,6 +21,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Hidden from '@material-ui/core/Hidden';
 import Drawer from '@material-ui/core/Drawer';
+import authContext from '../../context/auth-context';
 
 const drawerWidth = 260;
 
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
     // The drawer clipped under the app bar
       zIndex: theme.zIndex.drawer + 1,
+      position: 'fixed',
     },
   },
   menuButton: {
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
+      // width: drawerWidth,
       flexShrink: 0,
     },
   },

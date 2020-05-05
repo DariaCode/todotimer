@@ -1,15 +1,18 @@
 /* ----------------------------------------------------
-React.js / Tasks page component 
+React.js / Tasks page component
 
-Updated: 05/01/2020
+Updated: 05/05/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import React, {Component} from 'react';
 
+// Material-UI components (https://material-ui.com/)
+import { withStyles } from '@material-ui/core/styles';
 import Modal from '../components/Modal/Modal';
 import AuthContext from '../context/auth-context';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Lists from '../components/Tasks/TaskList/Lists'
 import Spinner from '../components/Spinner/Spinner';
 import AddTask from '../components/Tasks/AddTask/AddTask';
@@ -18,8 +21,30 @@ import DatePicker from '../components/Tasks/AddTask/Pickers/DatePicker';
 import RepeatTask from '../components/Tasks/AddTask/Repeat/Repeat'
 import TextField from '@material-ui/core/TextField';
 
-import './Tasks.css';
-
+// Style for Material-UI components
+const styles = theme => ({
+    root: {
+        display: 'flex',
+        paddingTop: '64px',
+        paddingLeft: '260px',
+        flexDirection: 'column',
+        [theme.breakpoints.down('sm')]:{
+            paddingTop: '1px',
+            paddingLeft: '1px',
+        }
+    },
+    taskView: {
+        maxWidth: '60vw',
+        padding: theme.spacing(4),
+        [theme.breakpoints.down('sm')]:{
+            maxWidth: '100vw',
+        },
+    },
+    addTaskIcons: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+  });
 class TasksPage extends Component {
     state = {
         creating: false,
@@ -58,31 +83,34 @@ class TasksPage extends Component {
         const title = this.titleElRef.current.value;
         const priority = +this.priorityElRef.current.value;
         let date = this.dateElRef.current.value;
-        let dateRepeat = this.dateRepeatElRef.current.value.split(",");
+        let dateRepeat = this
+            .dateRepeatElRef
+            .current
+            .value
+            .split(",");
         let start = null;
         let end = null;
         let intervalK = null;
         let intervalN = null;
-        if(dateRepeat.length > 1){
+        if (dateRepeat.length > 1) {
             start = new Date(dateRepeat[0]).toISOString();
             end = new Date(dateRepeat[1]).toISOString();
             intervalK = parseInt(dateRepeat[2]);
             intervalN = dateRepeat[3];
             date = start;
-        } 
+        }
         console.log(dateRepeat);
-        // to check input some data isn't empty.
-        // trim()-remove whitespace from both sides of a string.
-        if (title.trim().length === 0 || priority <= 0 ) {
+        // to check input some data isn't empty. trim()-remove whitespace from both
+        // sides of a string.
+        if (title.trim().length === 0 || priority <= 0) {
             return;
         };
-        
+
         if (date.length === 0) {
             date = null;
         };
 
-        // the task is an object with properties title: title, priority: 
-        // priority, etc.
+        // the task is an object with properties title: title, priority: priority, etc.
         const task = {
             title,
             priority,
@@ -143,7 +171,9 @@ class TasksPage extends Component {
                     _id: resData.data.createTask._id,
                     title: resData.data.createTask.title,
                     priority: resData.data.createTask.priority,
-                    date: resData.data.createTask.date === "1970-01-01T00:00:00.000Z"? null:resData.data.createTask.date,
+                    date: resData.data.createTask.date === "1970-01-01T00:00:00.000Z"
+                        ? null
+                        : resData.data.createTask.date,
                     complete: resData.data.createTask.complete,
                     creator: {
                         _id: this.context.userId
@@ -198,15 +228,18 @@ class TasksPage extends Component {
             }
             return res.json();
         }).then(resData => {
-            const tasks = resData.data.tasks.map(task => {
-                if(task.date === "1970-01-01T00:00:00.000Z"){
-                    task.date = null;
-                } else{
-                    task.date = new Date(task.date).toISOString();
-                }
-                return task;
+            const tasks = resData
+                .data
+                .tasks
+                .map(task => {
+                    if (task.date === "1970-01-01T00:00:00.000Z") {
+                        task.date = null;
+                    } else {
+                        task.date = new Date(task.date).toISOString();
+                    }
+                    return task;
 
-            });
+                });
             console.log(tasks);
             if (this.isActive) {
                 this.setState({tasks: tasks, isLoading: false});
@@ -224,46 +257,6 @@ class TasksPage extends Component {
                 .find(e => e._id === taskId);
             return {selectedTask: selectedTask};
         })
-    };
-
-    sendTaskHandler = () => {
-        if (!this.context.token) {
-            this.setState({selectedTask: null});
-            return;
-        }
-        const requestBody = {
-            query: `
-            mutation SendTask($id: ID!) {
-                sendTask(taskId: $id) {
-                    _id
-                    createdAt
-                    updatedAt
-                }
-            }
-        `,
-            variables: {
-                id: this.state.selectedTask._id
-            }
-        };
-
-        fetch('http://localhost:8000/graphql', {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.context.token
-            }
-        }).then(res => {
-            if (res.status !== 200 && res.status !== 201) {
-                throw new Error('it is Failed ');
-            }
-            return res.json();
-        }).then(resData => {
-            console.log(resData);
-            this.setState({selectedTask: null});
-        }).catch(err => {
-            console.log(err);
-        });
     };
 
     startEditTaskHandler = taskId => {
@@ -423,8 +416,49 @@ class TasksPage extends Component {
     };
 
     render() {
+        const { classes } = this.props;
         return (
             <React.Fragment>
+                <div className={classes.root}>
+                <CssBaseline />
+
+                <div className={classes.taskView}>
+                {this.context.token && 
+                    <TextField
+                        id="outlined-basic"
+                        label="Add task"
+                        variant="outlined"
+                        size="medium"
+                        multiline
+                        fullWidth
+                        inputRef={this.titleElRef}
+                        onClick={this.startCreateTaskHandler}/>
+                }
+
+                {this.state.creating && <AddTask
+                    canConfirm
+                    canCancel
+                    onCancel={this.modalCancelHandler}
+                    onConfirm={this.modalConfirmHandler}>
+                    <form className={classes.addTaskIcons}>
+                            <PriorityPopper ref={this.priorityElRef}/>
+                            <DatePicker ref={this.dateElRef}/>
+                            <RepeatTask ref={this.dateRepeatElRef}/>
+                    </form>
+                </AddTask>}
+
+                {this.state.isLoading
+                    ? <Spinner/>
+                    : <Lists
+                        tasks={this.state.tasks}
+                        authUserIdMain={this.context.userId}
+                        onViewDetailMain={this.showDetailHandler}
+                        onDeleteTaskMain={this.deleteTaskHandler}
+                        onEditTaskMain={this.startEditTaskHandler}
+                        onCompleteTaskMain={this.completeTaskHandler} />
+                    }
+                </div>
+
                 {this.state.updating && <Modal
                     title="add task"
                     canCancel
@@ -453,39 +487,13 @@ class TasksPage extends Component {
                     </form>
                 </Modal>}
 
-                {this.context.token && (
-                    <div className="addTask-control">
-                        <button className="addTask-button" onClick={this.startCreateTaskHandler}>
-                            <div className="formTask-control">
-                                <TextField id="outlined-basic" label="Add task" variant="outlined" size="medium" multiline fullWidth inputRef={this.titleElRef} />
-                            </div>
-                        </button>
-                    </div>
-                )}
-                {this.state.creating && <AddTask
-                    canCancel
-                    canConfirm
-                    onCancel={this.modalCancelHandler}
-                    onConfirm={this.modalConfirmHandler}
-                    confirmText="confirm">
-                    <form>
-                        <div className="form-control-button">
-                        <PriorityPopper
-                        ref={this.priorityElRef} />
-                        <DatePicker ref={this.dateElRef} />
-                        <RepeatTask ref={this.dateRepeatElRef} />
-                        </div>
-                    </form>
-                </AddTask>}
-
                 {this.state.selectedTask && (
-                    <Modal
-                        title={this.state.selectedTask.title}
-                        canCancel
-                        canConfirm
-                        onCancel={this.modalCancelHandler}
-                        onConfirm={this.sendTaskHandler}
-                        confirmText={this.context.token
+                    <Modal title={this.state.selectedTask.title} 
+                    canCancel 
+                    canConfirm 
+                    onCancel={this.modalCancelHandler} 
+                    // onConfirm={this.sendTaskHandler}} 
+                    confirmText={this.context.token
                         ? "send"
                         : "confirm"}>
                         <h1>{this.state.selectedTask.title}</h1>
@@ -493,19 +501,10 @@ class TasksPage extends Component {
                             - {this.state.selectedTask.date}</h2>
                     </Modal>
                 )}
-
-                {this.state.isLoading
-                    ? <Spinner/>
-                    : <Lists
-                    tasks={this.state.tasks}
-                    authUserIdMain={this.context.userId}
-                    onViewDetailMain={this.showDetailHandler}
-                    onDeleteTaskMain={this.deleteTaskHandler}
-                    onEditTaskMain={this.startEditTaskHandler}
-                    onCompleteTaskMain={this.completeTaskHandler} /> }   
+                </div>
             </React.Fragment>
         );
     }
 };
 
-export default TasksPage;
+export default withStyles(styles)(TasksPage);

@@ -13,7 +13,7 @@ import {ReactComponent as MediumIcon} from '../../AddTask/Popper/PriorityIcons/m
 import {ReactComponent as LowIcon} from '../../AddTask/Popper/PriorityIcons/low.svg';
 import {ReactComponent as HighIcon} from '../../AddTask/Popper/PriorityIcons/high.svg';
 
-import './TaskItem.css';
+// import './TaskItem.css';
 
 const TaskItem = (props) => {
   const [anchorEl,

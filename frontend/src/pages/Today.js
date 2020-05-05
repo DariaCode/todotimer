@@ -17,7 +17,7 @@ import PriorityPopper from '../components/Tasks/AddTask/Popper/Popper';
 import DatePicker from '../components/Tasks/AddTask/Pickers/DatePicker';
 import TextField from '@material-ui/core/TextField';
 
-import './Tasks.css';
+// import './Tasks.css';
 
 
 class TodayPage extends Component {
