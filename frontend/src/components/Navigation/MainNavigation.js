@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Navigation component
 
-Updated: 05/01/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   appBar: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
     // The drawer clipped under the app bar
       zIndex: theme.zIndex.drawer + 1,
       position: 'fixed',
@@ -40,15 +40,18 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       display: 'none',
     },
+  },
+  loginButton: {
+    textTransform: 'none',
   },
   title: {
     flexGrow: 1,
   },
   drawer: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       // width: drawerWidth,
       flexShrink: 0,
     },
@@ -92,16 +95,16 @@ export default function MainNavigation(props) {
             Todo app
                 </Typography>
                 {!context.token &&
-                (<Button color="inherit">Login</Button>)}
+                (<Button color="inherit" className={classes.loginButton}>Login</Button>)}
                 {context.token &&
-                (<Button color="inherit" onClick={context.logout}>
+                (<Button color="inherit" className={classes.loginButton} onClick={context.logout}>
                     Logout
                 </Button>)}
               </Toolbar>
             </AppBar>
             {context.token &&
             (<nav className={classes.drawer} aria-label="tasks folders">
-              <Hidden smUp implementation="css">
+              <Hidden mdUp implementation="css">
                 <Drawer
                   container={container}
                   variant="temporary"
@@ -118,7 +121,7 @@ export default function MainNavigation(props) {
                   {<Sidebar />}
                 </Drawer>
               </Hidden>
-              <Hidden xsDown implementation="css">
+              <Hidden smDown implementation="css">
                 <Drawer
                   classes={{
                     paper: classes.drawerPaper,

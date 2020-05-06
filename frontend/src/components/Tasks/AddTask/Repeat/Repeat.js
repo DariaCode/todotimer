@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Repeat Task component
 
-Updated: 05/05/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -15,7 +15,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Popper from '@material-ui/core/Popper';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
@@ -23,7 +22,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {ReactComponent as RepeatIcon} from './repeat.svg';
+import LoopIcon from '@material-ui/icons/Loop';
 
 // Style for Material-UI components
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +70,10 @@ const repeatTask = React.forwardRef((props, ref) => {
     setFrequencyK] = React.useState(1);
   const [frequencyN,
     setFrequencyN] = React.useState();
+  const [custom,
+    setCustom] = React.useState(false);
   const classes = useStyles();
+
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ?
@@ -126,6 +128,10 @@ const repeatTask = React.forwardRef((props, ref) => {
             date.currentTarget);
   };
 
+  const handleCustom = () => {
+    setCustom(!custom);
+  };
+
   const handleFrequencyK = (event) => {
     setDateArray([]);
     setFrequencyK( parseInt(event.target.value));
@@ -142,14 +148,16 @@ const repeatTask = React.forwardRef((props, ref) => {
     setDateArray([]);
     setFrequencyK(1);
     setFrequencyN(undefined);
+    setCustom(false);
     setAnchorEl(anchorEl ?
             null :
             date.currentTarget);
   };
   const handleOk = (date) => {
     const dateArr = [selectedStartDate, selectedEndDate, frequencyK, frequencyN];
-    console.log('new dateArray:', dateArr);
+    console.log('new dateArray:', dateArr, typeof dateArray.length);
     setDateArray(dateArr);
+    setCustom(false);
     setAnchorEl(anchorEl ?
             null :
             date.currentTarget);
@@ -160,9 +168,9 @@ const repeatTask = React.forwardRef((props, ref) => {
       <IconButton
         aria-describedby={id}
         onClick={handleClick}
-        value={selectedStartDate}
+        value={dateArray}
         ref={ref}>
-        <RepeatIcon/>
+        {dateArray? <LoopIcon color="primary" />: <LoopIcon />}
       </IconButton>
       <Popper id={id} open={open} anchorEl={anchorEl} className="repeat-popper">
         <Paper>
@@ -228,11 +236,14 @@ const repeatTask = React.forwardRef((props, ref) => {
                   Yearly
                 </Button>
               </div>
-              <Typography
-                className={classes.title}>
-                Custom
-              </Typography>
-              <div>
+              <Button
+                className={classes.button}
+                variant="outlined"
+                onClick={handleCustom}
+                color="primary">
+                  Set Custom
+              </Button>
+              {custom && <div className={classes.customButton}>
                 <TextField
                   className={classes.number}
                   id="outlined-number"
@@ -260,7 +271,7 @@ const repeatTask = React.forwardRef((props, ref) => {
                     <MenuItem value={'year'}>Year</MenuItem>
                   </Select>
                 </FormControl>
-              </div>
+              </div>}
               <div className={classes.buttonBox}>
                 <Button
                   className={classes.button}

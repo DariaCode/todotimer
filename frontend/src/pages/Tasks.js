@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Tasks page component
 
-Updated: 05/05/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -13,36 +13,43 @@ import { withStyles } from '@material-ui/core/styles';
 import Modal from '../components/Modal/Modal';
 import AuthContext from '../context/auth-context';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
 import Lists from '../components/Tasks/TaskList/Lists'
-import Spinner from '../components/Spinner/Spinner';
 import AddTask from '../components/Tasks/AddTask/AddTask';
 import PriorityPopper from '../components/Tasks/AddTask/Popper/Popper';
 import DatePicker from '../components/Tasks/AddTask/Pickers/DatePicker';
 import RepeatTask from '../components/Tasks/AddTask/Repeat/Repeat'
 import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Style for Material-UI components
 const styles = theme => ({
     root: {
         display: 'flex',
         paddingTop: '64px',
-        paddingLeft: '260px',
+        // paddingLeft: '260px',
         flexDirection: 'column',
-        [theme.breakpoints.down('sm')]:{
+        [theme.breakpoints.down('md')]:{
             paddingTop: '1px',
             paddingLeft: '1px',
         }
     },
     taskView: {
         maxWidth: '60vw',
-        padding: theme.spacing(4),
-        [theme.breakpoints.down('sm')]:{
+        padding: theme.spacing(3,1),
+        [theme.breakpoints.down('md')]:{
             maxWidth: '100vw',
         },
     },
     addTaskIcons: {
         display: 'flex',
         flexDirection: 'row',
+    },
+    spinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: theme.spacing(10),
     },
   });
 class TasksPage extends Component {
@@ -356,7 +363,11 @@ class TasksPage extends Component {
                 const updatedTasks = [...prevState.tasks];
                 console.log(updatedTasks);
                 const taskIndex = updatedTasks.findIndex((task => task._id === resData.data.completeTask._id));
-                updatedTasks[taskIndex].date = new Date(parseInt(resData.data.completeTask.date)).toISOString();
+                if (resData.data.completeTask.date === null) {
+                    updatedTasks[taskIndex].date = null;
+                } else {
+                    updatedTasks[taskIndex].date = new Date(parseInt(resData.data.completeTask.date)).toISOString();
+                }
                 updatedTasks[taskIndex].complete = resData.data.completeTask.complete;
                 return {tasks: updatedTasks};
             });
@@ -421,7 +432,7 @@ class TasksPage extends Component {
             <React.Fragment>
                 <div className={classes.root}>
                 <CssBaseline />
-
+                <Container maxWidth="sm">
                 <div className={classes.taskView}>
                 {this.context.token && 
                     <TextField
@@ -448,7 +459,9 @@ class TasksPage extends Component {
                 </AddTask>}
 
                 {this.state.isLoading
-                    ? <Spinner/>
+                    ? <div className={classes.spinner}> 
+                        <CircularProgress color="secondary" /> 
+                      </div>
                     : <Lists
                         tasks={this.state.tasks}
                         authUserIdMain={this.context.userId}
@@ -458,7 +471,7 @@ class TasksPage extends Component {
                         onCompleteTaskMain={this.completeTaskHandler} />
                     }
                 </div>
-
+                </Container>
                 {this.state.updating && <Modal
                     title="add task"
                     canCancel

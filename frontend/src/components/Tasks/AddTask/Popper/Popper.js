@@ -67,7 +67,13 @@ const PriorityPopper = React.forwardRef((props, ref) => {
   }
   return (
     <div className="form-control">
-      <IconButton aria-describedby={id} onClick={handleClick} value={priority} ref={ref}>{currentIcon}</IconButton>
+      <IconButton
+        aria-describedby={id}
+        onClick={handleClick}
+        value={priority}
+        ref={ref}>
+        {currentIcon}
+      </IconButton>
       <Popper id={id} open={open} anchorEl={anchorEl}>
         <Paper>
           <div className={classes.root}>

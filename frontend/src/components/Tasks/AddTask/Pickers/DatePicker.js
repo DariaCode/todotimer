@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Date Picker component
 
-Updated: 05/05/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -16,7 +16,7 @@ import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker} from '@material-ui/pickers';
 import {MuiPickersUtilsProvider} from '@material-ui/pickers';
-import {ReactComponent as CalendarIcon} from './calendar.svg';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 
 // Style for Material-UI components
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +42,7 @@ const datePicker = React.forwardRef((props, ref) => {
     setAnchorEl] = React.useState(null);
   const classes = useStyles();
 
+  console.log('date picker: selected date', selectedDate);
   const handleClick = (event) => {
     setAnchorEl(anchorEl ?
             null :
@@ -90,7 +91,9 @@ const datePicker = React.forwardRef((props, ref) => {
         onClick={handleClick}
         value={selectedDate}
         ref={ref}>
-        <CalendarIcon/>
+        {selectedDate === undefined ?
+          <DateRangeIcon /> :
+          <DateRangeIcon color="primary" />}
       </IconButton>
       <Popper id={id} open={open} anchorEl={anchorEl} className="date-popper">
         <Paper>

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Lists component
 
-Updated: 04/17/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -22,7 +22,9 @@ const lists = (props) => {
       date = 'Overdue';
     }
     if ( date !== null && date !== 'Overdue' && date !== 'Complete') {
-      date = task.date.split('T')[0];
+      // To change dates to local time zone.
+      const formatedDate = new Date(task.date).toLocaleDateString();
+      date = formatedDate;// task.date.split('T')[0];
     }
     if (!lists[date]) {
       lists[date] = [];
@@ -66,6 +68,7 @@ const lists = (props) => {
   const listsPerDays = sortedLists.map((task) => {
     return (
       <DayList
+        key={task._id}
         date={task.date}
         tasks={task.tasks}
         authUserId={props.authUserIdMain}
@@ -75,9 +78,9 @@ const lists = (props) => {
         onCompleteTask={props.onCompleteTaskMain} />
     );
   });
-  return (<ul className="task__list">
+  return (<div>
     {listsPerDays}
-  </ul>);
+  </div>);
 };
 
 

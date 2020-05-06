@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Main App.js
 
-Updated: 05/01/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -14,6 +14,20 @@ import TasksPage from './pages/Tasks';
 import TodayPage from './pages/Today';
 import MainNavigation from './components/Navigation/MainNavigation';
 import AuthContext from './context/auth-context';
+
+import { ThemeProvider } from '@material-ui/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#3B8BEB',
+          },
+        secondary: {
+            main: '#FC3C7B',
+          },
+      },
+  });
 
 class App extends Component {
     state = {
@@ -78,6 +92,7 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <React.Fragment>
+                <ThemeProvider theme={theme}>
                     <AuthContext.Provider
                         value={{
                         token: this.state.token,
@@ -97,6 +112,7 @@ class App extends Component {
                             </Switch>
                         </main>
                     </AuthContext.Provider>
+                    </ThemeProvider>
                 </React.Fragment>
             </BrowserRouter>
         );
