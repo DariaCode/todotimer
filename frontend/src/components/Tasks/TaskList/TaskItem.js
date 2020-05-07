@@ -133,8 +133,8 @@ export default function TaskItem(props) {
             onClose={handleClose}
             PaperProps={{
               style: {
-                maxHeight: 48 * 4.5,
-                width: '20ch',
+                maxHeight: 46 * 4.5,
+                width: '15ch',
               },
             }}>
             <MenuItem

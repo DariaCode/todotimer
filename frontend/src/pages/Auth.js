@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Auth component
 
-Updated: 05/01/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -219,7 +219,6 @@ class AuthPage extends Component {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
-                                type="password"
                                 inputRef={this.passwordEl}/>
 
                                 {this.state.showError &&

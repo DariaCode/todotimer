@@ -1,26 +1,50 @@
 import React from 'react';
 
-// import './Modal.css';
+// Material-UI components (https://material-ui.com/)
+import {makeStyles} from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-const modal = (props) => {
+// Style for Material-UI components
+const useStyles = makeStyles((theme) => ({
+  action: {
+    justifyContent: 'flex-start',
+    padding: theme.spacing(2, 3, 3, 3),
+  },
+}));
+
+// eslint-disable-next-line require-jsdoc
+export default function Modal(props) {
+  const classes = useStyles();
   return (
-    <div className="modal">
-      <header className="modal__header">
-        <h1>{props.title}</h1>
-      </header>
-      <section className="modal__content">
+    <Dialog
+      open
+      fullWidth
+      aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
+      <DialogContent>
         {props.children}
-      </section>
-      <section className="modal__actions">
-        {props.canCancel && <button className="btn" onClick={props.onCancel}>
-                    cancel
-        </button>}
-        {props.canConfirm && <button className="btn" onClick={props.onConfirm}>
-          {props.confirmText}
-        </button>}
-      </section>
-    </div>
+      </DialogContent>
+      <DialogActions
+        className={classes.action}>
+        <Button
+          onClick={props.onConfirm}
+          variant="contained"
+          color="primary">
+            Confirm
+        </Button>
+        <Button
+          onClick={props.onCancel}
+          variant="outlined"
+          color="secondary">
+            Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
-
-export default modal;

@@ -26,6 +26,10 @@ import LoopIcon from '@material-ui/icons/Loop';
 
 // Style for Material-UI components
 const useStyles = makeStyles((theme) => ({
+  popper: {
+    // The popper clipped under the dialog during editing task.
+    zIndex: theme.zIndex.modal,
+  },
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -172,7 +176,7 @@ const repeatTask = React.forwardRef((props, ref) => {
         ref={ref}>
         {dateArray? <LoopIcon color="primary" />: <LoopIcon />}
       </IconButton>
-      <Popper id={id} open={open} anchorEl={anchorEl} className="repeat-popper">
+      <Popper id={id} open={open} anchorEl={anchorEl} className={classes.popper}>
         <Paper>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <div className={classes.root}>

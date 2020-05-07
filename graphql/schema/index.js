@@ -50,6 +50,10 @@ input UpdateTaskInput {
     title: String
     priority: Float
     date: String
+    start: String
+    end: String
+    intervalK: Float
+    intervalN: String
 }
 
 input UserInput {

@@ -95,9 +95,16 @@ export default function MainNavigation(props) {
             Todo app
                 </Typography>
                 {!context.token &&
-                (<Button color="inherit" className={classes.loginButton}>Login</Button>)}
+                (<Button
+                  color="inherit"
+                  className={classes.loginButton}>
+                  Login
+                </Button>)}
                 {context.token &&
-                (<Button color="inherit" className={classes.loginButton} onClick={context.logout}>
+                (<Button
+                  color="inherit"
+                  className={classes.loginButton}
+                  onClick={context.logout}>
                     Logout
                 </Button>)}
               </Toolbar>

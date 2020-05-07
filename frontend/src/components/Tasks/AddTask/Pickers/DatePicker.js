@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     padding: theme.spacing(1),
   },
+  popper: {
+    // The popper clipped under the dialog during editing task.
+    zIndex: theme.zIndex.modal + 2,
+  },
   buttonBox: {
     display: 'flex',
     justifyContent: 'space-evenly',
@@ -95,7 +99,7 @@ const datePicker = React.forwardRef((props, ref) => {
           <DateRangeIcon /> :
           <DateRangeIcon color="primary" />}
       </IconButton>
-      <Popper id={id} open={open} anchorEl={anchorEl} className="date-popper">
+      <Popper id={id} open={open} anchorEl={anchorEl} className={classes.popper}>
         <Paper>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <div className={classes.root}>

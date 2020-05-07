@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Task resolver for GraphQL
 
-Updated: 05/01/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -31,7 +31,7 @@ module.exports = {
     }
     const task = new Task({
       title: args.taskInput.title,
-      priority: + args.taskInput.priority,
+      priority: +args.taskInput.priority,
       date: args.taskInput.date,
       complete: args.taskInput.complete,
       start: args.taskInput.start,
@@ -78,12 +78,22 @@ module.exports = {
       if (args.taskInput.date) {
         task.date = args.taskInput.date;
       }
+      if (args.taskInput.start) {
+        task.start = args.taskInput.start;
+        task.end = args.taskInput.end;
+        task.intervalK = args.taskInput.intervalK;
+        task.intervalN = args.taskInput.intervalN;
+      }
       await Task
           .findByIdAndUpdate(args.taskId, {
             $set: {
               title: task.title,
               priority: +task.priority,
               date: task.date,
+              start: task.start,
+              end: task.end,
+              intervalK: +task.intervalK,
+              intervalN: task.intervalN,
             },
           })
           .exec();

@@ -7,11 +7,11 @@ Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import React, {Component} from 'react';
+import AuthContext from '../context/auth-context';
 
 // Material-UI components (https://material-ui.com/)
 import { withStyles } from '@material-ui/core/styles';
 import Modal from '../components/Modal/Modal';
-import AuthContext from '../context/auth-context';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Lists from '../components/Tasks/TaskList/Lists'
@@ -21,6 +21,8 @@ import DatePicker from '../components/Tasks/AddTask/Pickers/DatePicker';
 import RepeatTask from '../components/Tasks/AddTask/Repeat/Repeat'
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
 // Style for Material-UI components
 const styles = theme => ({
@@ -51,6 +53,9 @@ const styles = theme => ({
         alignItems: 'center',
         paddingTop: theme.spacing(10),
     },
+    taskEdit: {
+        display: 'flex',
+    },
   });
 class TasksPage extends Component {
     state = {
@@ -58,7 +63,6 @@ class TasksPage extends Component {
         updating: false,
         tasks: [],
         isLoading: false,
-        selectedTask: null,
         updatedTask: null
     };
 
@@ -257,17 +261,9 @@ class TasksPage extends Component {
         });
     };
 
-    showDetailHandler = taskId => {
-        this.setState(prevState => {
-            const selectedTask = prevState
-                .tasks
-                .find(e => e._id === taskId);
-            return {selectedTask: selectedTask};
-        })
-    };
-
     startEditTaskHandler = taskId => {
         this.setState({updating: true, updatedTask: taskId});
+        console.log('updating state ',this.state.updating)
     };
 
     editTaskHandler = () => {
@@ -275,17 +271,37 @@ class TasksPage extends Component {
         const taskId = this.state.updatedTask;
         const title = this.titleElRef.current.value;
         const priority = +this.priorityElRef.current.value;
-        const date = this.dateElRef.current.value;
+        let date = this.dateElRef.current.value;
+        let dateRepeat = this
+        .dateRepeatElRef
+        .current
+        .value
+        .split(",");
+        let start = null;
+        let end = null;
+        let intervalK = null;
+        let intervalN = null;
+        if (dateRepeat.length > 1) {
+            start = new Date(dateRepeat[0]).toISOString();
+            end = new Date(dateRepeat[1]).toISOString();
+            intervalK = parseInt(dateRepeat[2]);
+            intervalN = dateRepeat[3];
+            date = start;
+        }
 
         const requestBody = {
             query: `
-                mutation EditTask($id: ID!, $title: String, $priority: Float, $date: String) {
-                    updateTask(taskId: $id, taskInput: {title: $title,  priority: $priority, date: $date}) {
+                mutation EditTask($id: ID!, $title: String, $priority: Float, $date: String, $start: String, $end: String, $intervalK: Float, $intervalN: String) {
+                    updateTask(taskId: $id, taskInput: {title: $title,  priority: $priority, date: $date, start: $start, end: $end, intervalK: $intervalK, intervalN: $intervalN}) {
                         _id
                         title
                         priority
                         date
                         complete
+                        start
+                        end
+                        intervalK
+                        intervalN
                     }
                 }
             `,
@@ -293,7 +309,11 @@ class TasksPage extends Component {
                 id: taskId,
                 title: title,
                 priority: priority,
-                date: date
+                date: date,
+                start: start,
+                end: end,
+                intervalK: intervalK,
+                intervalN: intervalN
             }
         };
 
@@ -312,12 +332,23 @@ class TasksPage extends Component {
             }
             return res.json();
         }).then(resData => {
+            console.log('update resData', resData);
             this.setState(prevState => {
                 const updatedTasks = [...prevState.tasks];
+                function formatedDate (date) {
+                    return new Date(parseInt(date)).toISOString();
+                };
                 const taskIndex = updatedTasks.findIndex((task => task._id === resData.data.updateTask._id));
                 updatedTasks[taskIndex].title = resData.data.updateTask.title;
                 updatedTasks[taskIndex].priority = resData.data.updateTask.priority;
-                updatedTasks[taskIndex].date = resData.data.updateTask.date;
+                updatedTasks[taskIndex].date = formatedDate(resData.data.updateTask.date);
+                if(resData.data.updateTask.start) {
+                    updatedTasks[taskIndex].start = formatedDate(resData.data.updateTask.start);
+                    updatedTasks[taskIndex].date = updatedTasks[taskIndex].start;
+                    updatedTasks[taskIndex].end = formatedDate(resData.data.updateTask.end);
+                    updatedTasks[taskIndex].intervalK = +resData.data.updateTask.intervalK;
+                    updatedTasks[taskIndex].intervalN = resData.data.updateTask.intervalN; 
+                }              
                 return {tasks: updatedTasks, updatedTask: null};
             });
 
@@ -447,8 +478,6 @@ class TasksPage extends Component {
                 }
 
                 {this.state.creating && <AddTask
-                    canConfirm
-                    canCancel
                     onCancel={this.modalCancelHandler}
                     onConfirm={this.modalConfirmHandler}>
                     <form className={classes.addTaskIcons}>
@@ -460,7 +489,8 @@ class TasksPage extends Component {
 
                 {this.state.isLoading
                     ? <div className={classes.spinner}> 
-                        <CircularProgress color="secondary" /> 
+                        <CircularProgress 
+                        color="secondary" /> 
                       </div>
                     : <Lists
                         tasks={this.state.tasks}
@@ -472,48 +502,30 @@ class TasksPage extends Component {
                     }
                 </div>
                 </Container>
+
                 {this.state.updating && <Modal
-                    title="add task"
-                    canCancel
-                    canConfirm
                     onCancel={this.modalCancelHandler}
                     onConfirm={this.editTaskHandler}
                     confirmText="confirm">
-                    <form>
-                        <div className="form-control">
-                            <label htmlFor="title">Title</label>
-                            <input type="text" id="title" ref={this.titleElRef}></input>
-                        </div>
-                        <div className="form-control">
-                            <label htmlFor="priority">Price</label>
-                            <select type="number" id="priority" ref={this.priorityElRef}>
-                                <option value="0">Normal</option>
-                                <option value="1">Low</option>
-                                <option value="2">Medium</option>
-                                <option value="3">High</option>
-                            </select>
-                        </div>
-                        <div className="form-control">
-                            <label htmlFor="date">Date</label>
-                            <input type="datetime-local" id="date" ref={this.dateElRef}></input>
-                        </div>
+                    <form className={classes.taskEdit}>
+                    <TextField
+                        id="outlined-basic"
+                        label="Edit task"
+                        variant="outlined"
+                        size="medium"
+                        multiline
+                        fullWidth
+                        inputRef={this.titleElRef}/>
+                    <PriorityPopper ref={this.priorityElRef}/>
+                    <DatePicker ref={this.dateElRef}/>
+                    <RepeatTask ref={this.dateRepeatElRef}/>
+                    <div>
+                    <IconButton onClick={this.deleteTaskHandler.bind(this, this.state.updatedTask)}>
+                        <DeleteOutlineIcon color="secondary"/>
+                    </IconButton>
+                    </div>
                     </form>
                 </Modal>}
-
-                {this.state.selectedTask && (
-                    <Modal title={this.state.selectedTask.title} 
-                    canCancel 
-                    canConfirm 
-                    onCancel={this.modalCancelHandler} 
-                    // onConfirm={this.sendTaskHandler}} 
-                    confirmText={this.context.token
-                        ? "send"
-                        : "confirm"}>
-                        <h1>{this.state.selectedTask.title}</h1>
-                        <h2>{this.state.selectedTask.price}
-                            - {this.state.selectedTask.date}</h2>
-                    </Modal>
-                )}
                 </div>
             </React.Fragment>
         );

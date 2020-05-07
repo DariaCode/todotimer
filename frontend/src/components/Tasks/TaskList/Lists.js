@@ -60,8 +60,7 @@ const lists = (props) => {
   };
   const completeDate = listsGroups.find((list) => list.date === 'Complete');
   if (completeDate) {
-    sortedLists = sortedLists.concat(completeDate)
-    ;
+    sortedLists = sortedLists.concat(completeDate);
   };
   console.log(sortedLists);
 

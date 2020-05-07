@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Priority Picker component
 
-Updated: 05/05/2020
+Updated: 05/06/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -22,6 +22,10 @@ import {ReactComponent as HighIcon} from './PriorityIcons/high.svg';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(1),
+  },
+  popper: {
+    // The popper clipped under the dialog during editing task.
+    zIndex: theme.zIndex.modal + 2,
   },
 }));
 
@@ -74,7 +78,7 @@ const PriorityPopper = React.forwardRef((props, ref) => {
         ref={ref}>
         {currentIcon}
       </IconButton>
-      <Popper id={id} open={open} anchorEl={anchorEl}>
+      <Popper id={id} open={open} anchorEl={anchorEl} className={classes.popper}>
         <Paper>
           <div className={classes.root}>
             <MenuItem value={1} onClick={handleChange}><NormalIcon/>Normal
