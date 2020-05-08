@@ -1,11 +1,15 @@
 /* ----------------------------------------------------
 React.js / Day List component
 
-Updated: 05/06/2020
+Updated: 05/08/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 import React from 'react';
+
+import TaskItem from './TaskItem';
+import {todayLocalDate,
+  tomorrowLocalDate} from '../../../dateHelpers/dateHelpers';
 
 // Material-UI components (https://material-ui.com/)
 import {makeStyles} from '@material-ui/core/styles';
@@ -13,7 +17,6 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 
-import TaskItem from './TaskItem';
 
 // Style for Material-UI components
 const useStyles = makeStyles((theme) => ({
@@ -47,11 +50,6 @@ export default function DayLists(props) {
     );
   });
 
-  const today = new Date().toLocaleDateString();// toISOString().split('T')[0];
-  const draftTomorrow = new Date(today);
-  const formatTomorrow = draftTomorrow.setDate(draftTomorrow.getDate() + 1);
-  const tomorrow = new Date(formatTomorrow).toLocaleDateString();// toISOString().split('T')[0];
-
   const options = {
     weekday: 'short',
     // year: 'numeric',
@@ -70,10 +68,10 @@ export default function DayLists(props) {
     case 'Complete':
       listTitle = 'Complete';
       break;
-    case today:
+    case todayLocalDate:
       listTitle = 'Today';
       break;
-    case tomorrow:
+    case tomorrowLocalDate:
       listTitle = 'Tomorrow';
       break;
     case 'null':
@@ -85,7 +83,7 @@ export default function DayLists(props) {
 
   return (
     <div>
-      <List className={classes.root}>
+      <List key="DayList" className={classes.root}>
         <Typography className={classes.title}>
           {listTitle}
         </Typography>

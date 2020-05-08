@@ -1,24 +1,26 @@
 /* ----------------------------------------------------
 React.js / Lists component
 
-Updated: 05/06/2020
+Updated: 05/08/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import React from 'react';
+import ListsContext from '../../../context/lists-context';
 
-import {formatISO, startOfToday} from 'date-fns';
 import DayList from './DayList';
+import {todayDate, todayLocalDate,
+  weekLocalDate} from '../../../dateHelpers/dateHelpers';
 
 const lists = (props) => {
+  // Divide tasks according to their date and completed status.
   const lists = props.tasks.reduce((lists, task) => {
     let date = task.date;
-    const today = formatISO(new Date(startOfToday()), {representation: 'date'});
     if (task.complete) {
       date = 'Complete';
     }
-    if (task.date < today && date !== null && date !== 'Complete') {
+    if (task.date < todayDate && date !== null && date !== 'Complete') {
       date = 'Overdue';
     }
     if ( date !== null && date !== 'Overdue' && date !== 'Complete') {
@@ -38,16 +40,24 @@ const lists = (props) => {
       tasks: lists[date],
     };
   });
+  console.log('lists/list', lists);
 
-  let sortedLists =[];
+  let sortedAll = [];
+  let sortedToday = [];
+  let sorted7Days = [];
+  const sortedCompleted = [];
   const withoutDate = listsGroups.find((list) => list.date === 'null');
   if (withoutDate) {
-    sortedLists.push(withoutDate)
+    sortedAll.push(withoutDate);
+    sortedToday.push(withoutDate);
+    sorted7Days.push(withoutDate);
     ;
   };
   const overdueDate = listsGroups.find((list) => list.date === 'Overdue');
   if (overdueDate) {
-    sortedLists.push(overdueDate)
+    sortedAll.push(overdueDate);
+    sortedToday.push(overdueDate);
+    sorted7Days.push(overdueDate);
     ;
   };
   const otherDate = listsGroups.filter((list) => list.date !== 'null' && list.date !== 'Overdue' && list.date !== 'Complete');
@@ -55,16 +65,28 @@ const lists = (props) => {
     return new Date(a.date) - new Date(b.date);
   });
   if (otherDate) {
-    sortedLists = sortedLists.concat(otherDate)
+    sortedAll = sortedAll.concat(otherDate)
     ;
   };
   const completeDate = listsGroups.find((list) => list.date === 'Complete');
   if (completeDate) {
-    sortedLists = sortedLists.concat(completeDate);
+    sortedAll = sortedAll.concat(completeDate);
+    sortedCompleted.push(completeDate);
   };
-  console.log(sortedLists);
 
-  const listsPerDays = sortedLists.map((task) => {
+  const todayDateList = listsGroups.filter((list) => list.date === todayLocalDate);
+  if (todayDateList) {
+    sortedToday = sortedToday.concat(todayDateList);
+  }
+
+  const weekDateList = listsGroups.filter((list) => list.date <= weekLocalDate);
+  if (weekDateList) {
+    sorted7Days = sorted7Days.concat(weekDateList);
+  }
+
+  console.log(sortedToday);
+
+  const listsAll = sortedAll.map((task) => {
     return (
       <DayList
         key={task._id}
@@ -77,10 +99,77 @@ const lists = (props) => {
         onCompleteTask={props.onCompleteTaskMain} />
     );
   });
-  return (<div>
-    {listsPerDays}
-  </div>);
-};
 
+  const listsToday = sortedToday.map((task)=>{
+    return (
+      <DayList
+        key={task._id}
+        date={task.date}
+        tasks={task.tasks}
+        authUserId={props.authUserIdMain}
+        onViewDetail={props.onViewDetailMain}
+        onDeleteTask={props.onDeleteTaskMain}
+        onEditTask={props.onEditTaskMain}
+        onCompleteTask={props.onCompleteTaskMain} />
+    );
+  });
+
+  const lists7Days = sorted7Days.map((task)=>{
+    return (
+      <DayList
+        key={task._id}
+        date={task.date}
+        tasks={task.tasks}
+        authUserId={props.authUserIdMain}
+        onViewDetail={props.onViewDetailMain}
+        onDeleteTask={props.onDeleteTaskMain}
+        onEditTask={props.onEditTaskMain}
+        onCompleteTask={props.onCompleteTaskMain} />
+    );
+  });
+
+  const listsCompleted = sortedCompleted.map((task)=>{
+    return (
+      <DayList
+        key={task._id}
+        date={task.date}
+        tasks={task.tasks}
+        authUserId={props.authUserIdMain}
+        onViewDetail={props.onViewDetailMain}
+        onDeleteTask={props.onDeleteTaskMain}
+        onEditTask={props.onEditTaskMain}
+        onCompleteTask={props.onCompleteTaskMain} />
+    );
+  });
+
+
+  return (
+    <ListsContext.Consumer>
+      {(value) =>{
+        let currectLists;
+        switch (value.listsOption) {
+          case 0:
+            currectLists = listsAll;
+            break;
+          case 1:
+            currectLists = listsToday;
+            break;
+          case 2:
+            currectLists = lists7Days;
+            break;
+          case 4:
+            currectLists = listsCompleted;
+            break;
+          default:
+            currectLists = listsAll;
+        }
+        return (
+          <div>
+            {currectLists}
+          </div>)
+        ;
+      }}
+    </ListsContext.Consumer>);
+};
 
 export default lists;

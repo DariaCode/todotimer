@@ -21,7 +21,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Hidden from '@material-ui/core/Hidden';
 import Drawer from '@material-ui/core/Drawer';
-import authContext from '../../context/auth-context';
 
 const drawerWidth = 260;
 

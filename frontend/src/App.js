@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Main App.js
 
-Updated: 05/06/2020
+Updated: 05/08/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -11,9 +11,10 @@ import {BrowserRouter, Route, Redirect, Switch} from 'react-router-dom';
 
 import AuthPage from './pages/Auth';
 import TasksPage from './pages/Tasks';
-import TodayPage from './pages/Today';
+import StatisticsPage from './pages/Statistics';
 import MainNavigation from './components/Navigation/MainNavigation';
 import AuthContext from './context/auth-context';
+import ListsContext from './context/lists-context';
 
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -32,7 +33,8 @@ const theme = createMuiTheme({
 class App extends Component {
     state = {
         token: null,
-        userId: null
+        userId: null,
+        listsOption: null,
     }
 
     // componentDidMount() executes when the page loads = is invoked immediately
@@ -80,6 +82,9 @@ class App extends Component {
         this.setState({token: null, userId: null});
     }
 
+    setListsOption = (option) => {
+        this.setState({listsOption: option});
+    }
     // componentWillUnmount() is invoked immediately before a component is unmounted
     // and destroyed. Perform any necessary cleanup in this method, such as
     // invalidating timers, canceling network requests, or cleaning up any
@@ -100,6 +105,10 @@ class App extends Component {
                         login: this.login,
                         logout: this.logout
                     }}>
+                        <ListsContext.Provider value={{
+                            listsOption: this.state.listsOption,
+                            setListsOption: this.setListsOption ,
+                        }}>
                         <MainNavigation/>
                         <main className="main-content">
                             <Switch>
@@ -107,10 +116,11 @@ class App extends Component {
                                 {this.state.token && <Redirect from="/auth" to="/tasks" exact/>}
                                 {!this.state.token && <Route path="/auth" component={AuthPage}/>}
                                 {this.state.token && <Route path="/tasks" component={TasksPage}/>}
-                                {this.state.token && <Route path="/today" component={TodayPage}/>}
+                                {this.state.token && <Route path="/statistics" component={StatisticsPage}/>}
                                 {!this.state.token && <Redirect to="/auth" exact/>}
                             </Switch>
                         </main>
+                        </ListsContext.Provider>
                     </AuthContext.Provider>
                     </ThemeProvider>
                 </React.Fragment>
