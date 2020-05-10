@@ -84,8 +84,6 @@ const lists = (props) => {
     sorted7Days = sorted7Days.concat(weekDateList);
   }
 
-  console.log(sortedToday);
-
   const listsAll = sortedAll.map((task) => {
     return (
       <DayList

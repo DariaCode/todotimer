@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Helper function for dates
 
-Updated: 05/08/2020
+Updated: 05/10/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -37,5 +37,14 @@ const weekDate = week.split('T')[0];
 // "5/16/2020"
 const weekLocalDate = new Date(formatedWeek).toLocaleDateString();
 
+const localDate = [todayLocalDate];
+const draftLocal = new Date(today);
+for (let i=0; i<6; i++) {
+  const nextLocalDay = draftLocal.setDate(draftLocal.getDate() - 1);
+  localDate.push(new Date(nextLocalDay).toLocaleDateString());
+}
+const localDates = localDate.reverse();
+
 export {today, todayDate, todayLocalDate, tomorrow,
-  tomorrowDate, tomorrowLocalDate, week, weekDate, weekLocalDate};
+  tomorrowDate, tomorrowLocalDate, week, weekDate, weekLocalDate,
+  localDates};

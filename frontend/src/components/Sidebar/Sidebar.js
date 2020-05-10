@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Sidebar component
 
-Updated: 05/08/2020
+Updated: 05/10/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -57,7 +57,7 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <InboxIcon/>
+                <InboxIcon color="primary"/>
               </ListItemIcon>
               <ListItemText primary="All Tasks"/>
             </ListItem>
@@ -72,7 +72,7 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <CalendarTodayIcon />
+                <CalendarTodayIcon color="primary"/>
               </ListItemIcon>
               <ListItemText primary="Today" />
             </ListItem>
@@ -86,7 +86,7 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <DateRangeIcon />
+                <DateRangeIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="Next 7 Days" />
             </ListItem>
@@ -97,7 +97,7 @@ export default function Sidebar() {
               onClick={(event) => handleListItemClick(event, 3)}
             >
               <ListItemIcon>
-                <AssessmentIcon />
+                <AssessmentIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="Statistics" />
             </ListItem>
@@ -111,7 +111,7 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <AssignmentTurnedInIcon />
+                <AssignmentTurnedInIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="Completed" />
             </ListItem>
