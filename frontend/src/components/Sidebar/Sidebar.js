@@ -18,7 +18,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 // Style for Material-UI components
 const useStyles = makeStyles((theme) => ({
@@ -69,7 +72,7 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <DraftsIcon />
+                <CalendarTodayIcon />
               </ListItemIcon>
               <ListItemText primary="Today" />
             </ListItem>
@@ -83,7 +86,7 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <DraftsIcon />
+                <DateRangeIcon />
               </ListItemIcon>
               <ListItemText primary="Next 7 Days" />
             </ListItem>
@@ -94,7 +97,7 @@ export default function Sidebar() {
               onClick={(event) => handleListItemClick(event, 3)}
             >
               <ListItemIcon>
-                <DraftsIcon />
+                <AssessmentIcon />
               </ListItemIcon>
               <ListItemText primary="Statistics" />
             </ListItem>
@@ -108,7 +111,7 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <DraftsIcon />
+                <AssignmentTurnedInIcon />
               </ListItemIcon>
               <ListItemText primary="Completed" />
             </ListItem>
