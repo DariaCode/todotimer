@@ -1,2 +1,2 @@
 # ToDoTimer
-❮img src="ima/laptop.png" width="100" ❯
+❮img src="img/laptop.png" width="100" ❯
