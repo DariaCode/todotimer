@@ -187,6 +187,9 @@ class TasksPage extends Component {
                         ? null
                         : resData.data.createTask.date,
                     complete: resData.data.createTask.complete,
+                    end: resData.data.createTask.end === "1970-01-01T00:00:00.000Z"
+                    ? null
+                    : resData.data.createTask.end,
                     creator: {
                         _id: this.context.userId
                     }
