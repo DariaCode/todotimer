@@ -1,9 +1,4 @@
 # ToDoTimer
-This app is built by using:
-- Node.js/express
-- GraphQL
-- MongoDB/mongoose
-- React.js
 ![](img/laptop.png)
 
 **Demo video:**  
@@ -12,9 +7,9 @@ This app is built by using:
 **Design system:**  
 [https://github.com/DariaCode/todotimer](https://github.com/DariaCode/todotimer)
 
-## Current application state
+### Current application state
 
-The current version of this app provides for a user: 
+The current version of this web app with responsive UI provides for user to: 
 - Create an account(Signup) and log in,
 - create task:
   - title,
@@ -26,7 +21,7 @@ The current version of this app provides for a user:
 
 User can use a sidebar to manage displaying tasks by paraments(All Task, Today, Next 7 Days, Completed). The ToDoTimer allows seeing statistics of completions. 
 
-All users information stored into [MongoDB](https://www.mongodb.com/). Application ensure a secure way to store password ( [bcryptjs](https://www.npmjs.com/package/bcryptjs) ) and  authorization (JSON Web Tokens - [JWT](https://jwt.io/)).
+All users information stored into [MongoDB](https://www.mongodb.com/). The application ensure a secure way to store password ( [bcryptjs](https://www.npmjs.com/package/bcryptjs) ) and  authorization (JSON Web Tokens - [JWT](https://jwt.io/)).
 
 ### Install and Run
 
@@ -46,7 +41,7 @@ npm run start
 open localhost:3000
 ```
 
-## Built with
+### Built with
 
 - [React](https://reactjs.org/) - JavaScript UI development library.
 - [React Router DOM](https://reacttraining.com/react-router/web/guides/quick-start) - Routing library for React.
@@ -55,10 +50,10 @@ open localhost:3000
 - [GraphQL](https://graphql.org/) - An open-source data query and manipulation language for APIs, and a runtime for fulfilling queries with existing data.
 - [MongoDB](https://www.mongodb.com/) - A cross-platform document-oriented database program.
 
-## Author
+### Author
 
 Built by Daria Vodzinskaia - [DariaCode](https://dariacode.dev)
 
-## License
+### License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/dariacode/) file for details
+This project is licensed under the GPL v3 License - see the [LICENSE.md](https://github.com/DariaCode/todotimer/blob/master/LICENSE) file for details
