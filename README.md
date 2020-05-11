@@ -16,6 +16,7 @@ The current version of this web app with responsive UI provides for user to:
   - priority (optional),
   - date (optional),
   - repeat (optional),
+- mark task as completed and unmark it,  
 - edit task, 
 - delete task.
 
