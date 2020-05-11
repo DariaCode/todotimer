@@ -8,7 +8,7 @@
     "start": "nodemon app.js"
   },
   "author": "Daria Vodzinskaia dariacode.dev",
-  "license": "ISC",
+  "license": "GPL",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",

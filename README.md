@@ -1,8 +1,8 @@
 # ToDoTimer
-![](img/laptop.png)
+![](img/intro16_9.gif)
 
-**Demo video:**  
-[https://dariacode.dev](https://dariacode.dev)
+**Demo:**  
+[dariacode.dev](https://dariacode.dev/projects/todotimer/)
 
 **Design system:**  
 [https://github.com/DariaCode/todotimer](https://github.com/DariaCode/todotimer)
@@ -10,18 +10,18 @@
 ### Current application state
 
 The current version of this web app with responsive UI provides for user to: 
-- Create an account(Signup) and log in,
+- create an account(Signup) and log in,
 - create task:
   - title,
-  - priority(optional),
-  - date(optional),
-  - repeat(optional),
+  - priority (optional),
+  - date (optional),
+  - repeat (optional),
 - edit task, 
 - delete task.
 
-User can use a sidebar to manage displaying tasks by paraments(All Task, Today, Next 7 Days, Completed). The ToDoTimer allows seeing statistics of completions. 
+User can use a sidebar to manage displaying tasks by paraments (All Task, Today, Next 7 Days, Completed). The ToDoTimer allows seeing statistics of completions. 
 
-All users information stored into [MongoDB](https://www.mongodb.com/). The application ensure a secure way to store password ( [bcryptjs](https://www.npmjs.com/package/bcryptjs) ) and  authorization (JSON Web Tokens - [JWT](https://jwt.io/)).
+All users information stored into [MongoDB](https://www.mongodb.com/). The application ensure a secure way to store password ([bcryptjs](https://www.npmjs.com/package/bcryptjs)) and  authorization (JSON Web Tokens - [JWT](https://jwt.io/)).
 
 ### Install and Run
 
@@ -56,4 +56,4 @@ Built by Daria Vodzinskaia - [DariaCode](https://dariacode.dev)
 
 ### License
 
-This project is licensed under the GPL v3 License - see the [LICENSE.md](https://github.com/DariaCode/todotimer/blob/master/LICENSE) file for details
+This project is licensed under the GPL v3 License - see the [LICENSE.md](https://github.com/DariaCode/todotimer/blob/master/LICENSE) file for details.
