@@ -1,5 +1,4 @@
 # ToDoTimer
-<<<<<<< HEAD
 This app is built by using:
 - Node.js/express
 - GraphQL
@@ -7,7 +6,7 @@ This app is built by using:
 - React.js
 ![](img/laptop.png)
 
-**Demo vid:**  
+**Demo video:**  
 [https://dariacode.dev](https://dariacode.dev)
 
 **Design system:**  
@@ -18,10 +17,10 @@ This app is built by using:
 The current version of this app provides for a user: 
 - Create an account(Signup) and log in,
 - create task:
- - title,
- - priority(optional),
- - date(optional),
- - repeat(optional),
+  - title,
+  - priority(optional),
+  - date(optional),
+  - repeat(optional),
 - edit task, 
 - delete task.
 
@@ -29,17 +28,37 @@ User can use a sidebar to manage displaying tasks by paraments(All Task, Today, 
 
 All users information stored into [MongoDB](https://www.mongodb.com/). Application ensure a secure way to store password ( [bcryptjs](https://www.npmjs.com/package/bcryptjs) ) and  authorization (JSON Web Tokens - [JWT](https://jwt.io/)).
 
-### Installing
+### Install and Run
 
 To install all dependencies required for the project, clone or download the source `cd` into the project root and from your terminal run:
 
 ```bash
-npm install
+git clone https://github.com/DariaCode/todotimer
+cd todotimer
+npm i
+npm run start
+open localhost:8000
 ```
-### Local development
-
-The project uses [Create React App](https://facebook.github.io/create-react-app/), which includes a local development server `cd` into the project root and run the following command from the terminal:
-
+and run frontend (React.js):
 ```bash
-npm start
+cd frondend
+npm run start
+open localhost:3000
 ```
+
+## Built with
+
+- [React](https://reactjs.org/) - JavaScript UI development library.
+- [React Router DOM](https://reacttraining.com/react-router/web/guides/quick-start) - Routing library for React.
+- [Node.js](https://nodejs.org/en/) - A JavaScript runtime built on Chrome's V8 JavaScript engine.
+- [Express.js](https://expressjs.com/) - A minimal and flexible Node.js web application framework.
+- [GraphQL](https://graphql.org/) - An open-source data query and manipulation language for APIs, and a runtime for fulfilling queries with existing data.
+- [MongoDB](https://www.mongodb.com/) - A cross-platform document-oriented database program.
+
+## Author
+
+Built by Daria Vodzinskaia - [DariaCode](https://dariacode.dev)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/dariacode/) file for details
