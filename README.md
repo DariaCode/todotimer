@@ -10,7 +10,7 @@
 ### Current application state
 
 The current version of this web app with responsive UI provides for user to: 
-- create an account(Signup) and log in,
+- create an account and log in,
 - create task:
   - title,
   - priority (optional),
