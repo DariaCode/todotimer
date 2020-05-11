@@ -1,4 +1,5 @@
 # ToDoTimer
+<<<<<<< HEAD
 This app is built by using:
 - Node.js/express
 - GraphQL
