@@ -58,12 +58,12 @@ module.exports = {
       userId: user.id,
       email: user.email,
     }, process.env.TOKEN, {
-      expiresIn: '1h', // CHANGE 1h EXPIRATION INTERVAL!!!
+      expiresIn: '24h', // CHANGE 1h EXPIRATION INTERVAL!!!
     });
     return {
       userId: user.id,
       token: token,
-      tokenExpiration: 1, // CHANGE 1h EXPIRATION INTERVAL!!!
+      tokenExpiration: 24, // CHANGE 1h EXPIRATION INTERVAL!!!
     };
   },
 };

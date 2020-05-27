@@ -9,6 +9,7 @@ Website: www.dariacode.dev
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import AuthContext from '../context/auth-context';
+import Facebook from '../components/Social_auth/Facebook';
 
 // Material-UI components (https://material-ui.com/)
 import Typography from '@material-ui/core/Typography';
@@ -196,6 +197,7 @@ class AuthPage extends Component {
                                 ? "Login"
                                 : "Signup"}
                         </Typography>
+                        <Facebook />
                         <form className={classes.form} onSubmit={this.submitHandler}>
                             {/* CHECK IF noValidate NEED*/}
                             <TextField
