@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import FacebookLogin from 'react-facebook-login';
-const process = require('process');
+import config from "../../../config.json";
 
 class Facebook extends Component {
   state = {
@@ -11,7 +11,7 @@ class Facebook extends Component {
   }
   
   responseFacebook = response => {
-    console.log("app_id", process.env.FACEBOOK_APP_ID);
+    console.log("app_id", config.FACEBOOK_APP_ID);
     console.log(response);
   }
 
