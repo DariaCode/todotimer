@@ -1,16 +1,16 @@
 /* ----------------------------------------------------
 Node.js / User resolver for GraphQL
 
-Updated: 05/01/2020
+Updated: 05/28/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 const bcrypt = require('bcryptjs'); // to encrypt the passwords in the database
-const jwt = require('jsonwebtoken'); // to generate JSON web token
-const process = require('process');
 
 const User = require('../../models/user');
+const {authFacebook} = require('../../helpers/passport');
+const {generateJWT} = require('../../helpers/jwt');
 
 module.exports = {
   createUser: async (args) => {
@@ -41,7 +41,7 @@ module.exports = {
       throw err;
     }
   },
-  login: async ( {email, password}) => {
+  login: async ({email, password}) => {
     const user = await User.findOne({
       email: email,
     });
@@ -54,16 +54,43 @@ module.exports = {
     if (!isEqual) {
       throw new Error('Password is incorrect');
     }
-    const token = jwt.sign({
-      userId: user.id,
-      email: user.email,
-    }, process.env.TOKEN, {
-      expiresIn: '24h', // CHANGE 1h EXPIRATION INTERVAL!!!
+    return generateJWT(user);
+  },
+  authFacebook: async (args, req, res) => {
+    const existingUser = await User.findOne({
+      email: args.facebookInput.email,
     });
-    return {
-      userId: user.id,
-      token: token,
-      tokenExpiration: 24, // CHANGE 1h EXPIRATION INTERVAL!!!
+    req.body = {
+      ...req.body,
+      access_token: args.facebookInput.accessToken,
     };
+    try {
+      const {data, info} = await authFacebook(req, res);
+      if (data) {
+        if (existingUser) {
+          console.log('existing User', existingUser);
+          return generateJWT(existingUser);
+        } else {
+          const user = new User({
+            email: args.facebookInput.email,
+            password: null,
+          });
+          const result = await user.save();
+          console.log('result: ', result);
+          return generateJWT(result);
+        }
+      }
+      if (info) {
+        console.log(info);
+        switch (info.code) {
+          case 'ETIMEDOUT':
+            return (new Error('Failed to reach Facebook: Try again'));
+          default:
+            return (new Error('Facebook: something went wrong'));
+        }
+      }
+    } catch (error) {
+      return error;
+    }
   },
 };

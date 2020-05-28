@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Express server for Todotimer app
 
-Updated: 05/01/2020
+Updated: 05/28/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -22,17 +22,6 @@ app.use(cors());
 app.options('*', cors());
 
 app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type',
-      'Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
 
 app.use(isAuth);
 

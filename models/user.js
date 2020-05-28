@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / User's schema for MongoDB
 
-Updated: 05/01/2020
+Updated: 05/28/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -17,7 +17,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
   },
   createdTasks: [ // array
     {

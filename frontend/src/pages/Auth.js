@@ -197,7 +197,6 @@ class AuthPage extends Component {
                                 ? "Login"
                                 : "Signup"}
                         </Typography>
-                        <Facebook />
                         <form className={classes.form} onSubmit={this.submitHandler}>
                             {/* CHECK IF noValidate NEED*/}
                             <TextField
@@ -239,6 +238,7 @@ class AuthPage extends Component {
                                     ? "Login"
                                     : "Signup"}
                             </Button>
+                            <Facebook />
                             <Grid container justify="center">
                                 {/* <Grid item xs>
                                 <Link href="#" variant="body2">
