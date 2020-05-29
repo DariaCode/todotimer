@@ -1,12 +1,13 @@
 /* ----------------------------------------------------
 Node.js / Passport
 
-Updated: 05/28/2020
+Updated: 05/29/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 const passport = require('passport');
 const FacebookTokenStrategy = require('passport-facebook-token');
+const {Strategy: GoogleTokenStrategy} = require('passport-google-token');
 
 // Facebook strategy.
 const FacebookTokenStrategyCallback =
@@ -21,6 +22,19 @@ passport.use(new FacebookTokenStrategy({
   clientSecret: process.env.FACEBOOK_APP_SECRET,
 }, FacebookTokenStrategyCallback));
 
+// Google strategy.
+const GoogleTokenStrategyCallback =
+(accessToken, refreshToken, profile, done) => done(null, {
+  accessToken,
+  refreshToken,
+  profile,
+});
+
+passport.use(new GoogleTokenStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+}, GoogleTokenStrategyCallback));
+
 // Promisified authenticate functions.
 const authFacebook = (req, res) => new Promise((resolve, reject) => {
   passport.authenticate('facebook-token', {session: false}, (err, data, info) => {
@@ -29,4 +43,11 @@ const authFacebook = (req, res) => new Promise((resolve, reject) => {
   })(req, res);
 });
 
-module.exports = {authFacebook};
+const authGoogle = (req, res) => new Promise((resolve, reject) => {
+  passport.authenticate('google-token', {session: false}, (err, data, info) => {
+    if (err) reject(err);
+    resolve({data, info});
+  })(req, res);
+});
+
+module.exports = {authFacebook, authGoogle};

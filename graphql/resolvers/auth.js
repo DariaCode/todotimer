@@ -9,7 +9,7 @@ Website: www.dariacode.dev
 const bcrypt = require('bcryptjs'); // to encrypt the passwords in the database
 
 const User = require('../../models/user');
-const {authFacebook} = require('../../helpers/passport');
+const {authFacebook, authGoogle} = require('../../helpers/passport');
 const {generateJWT} = require('../../helpers/jwt');
 
 module.exports = {
@@ -87,6 +87,39 @@ module.exports = {
             return (new Error('Failed to reach Facebook: Try again'));
           default:
             return (new Error('Facebook: something went wrong'));
+        }
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+  authGoogle: async (args, req, res) => {
+    const existingUser = await User.findOne({
+      email: args.googleInput.email,
+    });
+    try {
+      const {data, info} = await authGoogle(req, res);
+      if (data) {
+        if (existingUser) {
+          console.log('existing User', existingUser);
+          return generateJWT(existingUser);
+        } else {
+          const user = new User({
+            email: args.googleInput.email,
+            password: null,
+          });
+          const result = await user.save();
+          console.log('result: ', result);
+          return generateJWT(result);
+        }
+      }
+      if (info) {
+        console.log(info);
+        switch (info.code) {
+          case 'ETIMEDOUT':
+            return (new Error('Failed to reach Google: Try again'));
+          default:
+            return (new Error('Google: something went wrong'));
         }
       }
     } catch (error) {

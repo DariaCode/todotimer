@@ -74,6 +74,7 @@ type RootMutation {
     createTask(taskInput: TaskInput): Task
     createUser(userInput: UserInput): User
     authFacebook(facebookInput: SocialAuthInput!): AuthData!
+    authGoogle(googleInput: SocialAuthInput!): AuthData!
     cancelSending(sendingId: ID!): Task!
     updateTask(taskId: ID!, taskInput: UpdateTaskInput): Task!
     completeTask(taskId: ID!): Task!

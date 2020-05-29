@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Auth component
 
-Updated: 05/06/2020
+Updated: 05/29/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -10,6 +10,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import AuthContext from '../context/auth-context';
 import Facebook from '../components/Social_auth/Facebook';
+import Google from '../components/Social_auth/Google';
+import MyDivider from '../components/Social_auth/Divider';
 
 // Material-UI components (https://material-ui.com/)
 import Typography from '@material-ui/core/Typography';
@@ -59,6 +61,9 @@ const styles = (theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2)
+    },
+    facebook: {
+        margin: theme.spacing(3, 0, 2),
     },
     switch: {
         alignItems: 'center'
@@ -238,7 +243,13 @@ class AuthPage extends Component {
                                     ? "Login"
                                     : "Signup"}
                             </Button>
-                            <Facebook />
+                            <MyDivider />
+                            <div className={classes.submit}>
+                                <Facebook />
+                            </div>
+                            <div className={classes.submit}>
+                                <Google />
+                            </div>
                             <Grid container justify="center">
                                 {/* <Grid item xs>
                                 <Link href="#" variant="body2">

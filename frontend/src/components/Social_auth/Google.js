@@ -1,5 +1,5 @@
 /* ----------------------------------------------------
-Node.js / Facebook button component
+Node.js / Google button component
 
 Updated: 05/29/2020
 Author: Daria Vodzinskaia
@@ -7,25 +7,28 @@ Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import React, {Component} from 'react';
-import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
 import AuthContext from '../../context/auth-context';
 import config from '../../config.json';
 
-import FacebookIcon from '@material-ui/icons/Facebook';
+import Button from '@material-ui/core/Button';
 
-
-class Facebook extends Component {
+class Google extends Component {
 
     // To add access to context data.
     static contextType = AuthContext;
 
-    responseFacebook = response => {
+    onFailure = (error) => {
+      alert(error);
+    };
+
+    googleResponse = response => {
         console.log('response',response,);
         // To create body for POST request for login/sing up.
         let requestBody = {
             query: `
-            mutation AuthFacebook($email: String!, $accessToken: String!){
-              authFacebook(facebookInput: {email: $email, accessToken: $accessToken}) {
+            mutation AuthGoogle($email: String!, $accessToken: String!){
+              authGoogle(googleInput: {email: $email, accessToken: $accessToken}) {
                 userId
                 token
                 tokenExpiration
@@ -33,10 +36,11 @@ class Facebook extends Component {
             }
         `,
             variables: {
-                email: response.email,
+                email: response.Ut.Eu,
                 accessToken: response.accessToken
             }
-        };
+        }; 
+        
         fetch('http://localhost:8000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
@@ -46,17 +50,17 @@ class Facebook extends Component {
         }).then(res => {
             if (res.status !== 200 && res.status !== 201) {
                 // To handle error message.
-                console.log("facebook res", res);
+                console.log("google res", res);
                 throw new Error('Failed');
             }
             return res.json();
         }).then(resData => {
             console.log(resData);
-            if (resData.data.authFacebook.token) {
+             if (resData.data.authGoogle.token) {
                 this
                     .context
-                    .login(resData.data.authFacebook.token, resData.data.authFacebook.userId, resData.data.authFacebook.tokenExpiration);
-            }
+                    .login(resData.data.authGoogle.token, resData.data.authGoogle.userId, resData.data.authGoogle.tokenExpiration);
+            } 
         }).catch(err => {
             console.log(err);
         }); 
@@ -64,15 +68,23 @@ class Facebook extends Component {
 
     render() {
         return (
-            <FacebookLogin
-                appId={config.FACEBOOK_APP_ID}
-                cssClass ="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-fullWidth"
-                // icon={<FacebookIcon/>}
-                autoLoad={false}
-                fields="name,email"
-                callback={this.responseFacebook} />
+            <GoogleLogin
+              clientId={config.GOOGLE_CLIENT_ID}
+              render={renderProps => (
+                <Button 
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={renderProps.onClick} 
+                disabled={renderProps.disabled}>LOGIN WITH GOOGLE</Button>
+              )}
+              // className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-fullWidth"
+              disabledStyle
+              icon={true}
+              onSuccess={this.googleResponse}
+              onFailure={this.onFailure} />
         );
     }
 }
 
-export default Facebook;
+export default Google;
