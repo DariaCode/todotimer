@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Express server for Todotimer app
 
-Updated: 05/28/2020
+Updated: 06/05/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */

@@ -12,6 +12,7 @@ import {BrowserRouter, Route, Redirect, Switch} from 'react-router-dom';
 import AuthPage from './pages/Auth';
 import TasksPage from './pages/Tasks';
 import StatisticsPage from './pages/Statistics';
+import ConfirmPage from './pages/Confirm';
 import MainNavigation from './components/Navigation/MainNavigation';
 import AuthContext from './context/auth-context';
 import ListsContext from './context/lists-context';
@@ -115,6 +116,7 @@ class App extends Component {
                                 {this.state.token && <Redirect from="/" to="/tasks" exact/>}
                                 {this.state.token && <Redirect from="/auth" to="/tasks" exact/>}
                                 {!this.state.token && <Route path="/auth" component={AuthPage}/>}
+                                <Route path="/confirm/:emailToken" component={ConfirmPage}/>
                                 {this.state.token && <Route path="/tasks" component={TasksPage}/>}
                                 {this.state.token && <Route path="/statistics" component={StatisticsPage}/>}
                                 {!this.state.token && <Redirect to="/auth" exact/>}

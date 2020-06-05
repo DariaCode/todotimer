@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / User's schema for MongoDB
 
-Updated: 05/28/2020
+Updated: 06/02/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -19,6 +19,10 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  confirmed: {
+    type: Boolean,
+    required: false,
+  },
   createdTasks: [ // array
     {
       // to store all tasks' IDs which this user have created
@@ -27,6 +31,9 @@ const userSchema = new Schema({
       ref: 'Task',
     },
   ],
+},
+{
+  timestamps: true,
 });
 
 module.exports = mongoose.model('User', userSchema);

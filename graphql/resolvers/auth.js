@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / User resolver for GraphQL
 
-Updated: 05/28/2020
+Updated: 06/02/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -11,6 +11,8 @@ const bcrypt = require('bcryptjs'); // to encrypt the passwords in the database
 const User = require('../../models/user');
 const {authFacebook, authGoogle} = require('../../helpers/passport');
 const {generateJWT} = require('../../helpers/jwt');
+const {sendEmail} = require('../../helpers/nodemailer');
+const jwt = require('jsonwebtoken'); // to generate JSON web token
 
 module.exports = {
   createUser: async (args) => {
@@ -29,16 +31,16 @@ module.exports = {
       const user = new User({
         email: args.userInput.email,
         password: hashedPassword,
+        confirmed: false,
       });
       const result = await user.save();
-
+      sendEmail(result);
       return {
         ...result._doc,
         password: null,
-        /*    _id: result._doc._id.toSring() */
       };
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   },
   login: async ({email, password}) => {
@@ -74,6 +76,7 @@ module.exports = {
           const user = new User({
             email: args.facebookInput.email,
             password: null,
+            confirmed: null,
           });
           const result = await user.save();
           console.log('result: ', result);
@@ -107,6 +110,7 @@ module.exports = {
           const user = new User({
             email: args.googleInput.email,
             password: null,
+            confirmed: null,
           });
           const result = await user.save();
           console.log('result: ', result);
@@ -124,6 +128,21 @@ module.exports = {
       }
     } catch (error) {
       return error;
+    }
+  },
+  confirmUser: async (args, req, res) => {
+    try {
+      const decodedToken = jwt.verify(args.confirmInput.emailToken, process.env.NODEMAILER_TOKEN);
+      await User.findByIdAndUpdate(decodedToken.user, {
+        $set: {
+          confirmed: true,
+        },
+      }).exec();
+      return {
+        msgs: 'It works!',
+      };
+    } catch (err) {
+      throw err;
     }
   },
 };
