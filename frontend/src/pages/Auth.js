@@ -258,11 +258,11 @@ class AuthPage extends Component {
                                 <Google />
                             </div>
                             <Grid container justify="center">
-                                {/* <Grid item xs>
+                            <Grid item xs>
                                 <Link href="#" variant="body2">
                                     Forgot password?
                                 </Link>
-                            </Grid> */}
+                            </Grid> 
                                 <Grid item>
                                     <Link
                                         className={classes.switch}
