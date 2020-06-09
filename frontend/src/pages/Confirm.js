@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Email confirmation page
 
-Updated: 06/06/2020
+Updated: 06/08/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -16,9 +16,11 @@ import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 // Material-UI components (https://material-ui.com/)
 import {withStyles} from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
 
 // Style for Material-UI components
 const styles = (theme) => ({
@@ -32,13 +34,25 @@ const styles = (theme) => ({
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'column',
-      padding: theme.spacing(1.5)
+      padding: theme.spacing(5.5)
     },
     spinner: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: theme.spacing(10)
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: theme.spacing(10)
+    },
+    icon: {
+      color: green[500],
+      fontSize: 50
+    },
+    text: {
+      paddingTop: theme.spacing(5.5),
+      paddingBottom: theme.spacing(5.5)
+    },
+    link: {
+      textDecoration: 'none',
+      color: 'inherit',
     }
 });
 
@@ -88,11 +102,18 @@ class ConfirmPage extends Component {
                         <CircularProgress color="secondary"/>
                       </div>
                     : <Paper className={classes.paper}>
-                      <Typography component="h2" variant="h5" color="primary" gutterBottom>
+                      <CheckCircleOutlineIcon
+                      className={classes.icon} />
+                      <Typography 
+                      component="h2" 
+                      variant="h5" 
+                      color="primary" 
+                      className={classes.text}
+                      gutterBottom>
                         Your email has been confirmed!
                       </Typography>
                       <Button variant="outlined" color="primary">
-                      <Link to='/'>Go to Homepage</Link>
+                      <Link className={classes.link} to='/'>Go to Homepage</Link>
                       </Button>
                       </Paper>
                 }

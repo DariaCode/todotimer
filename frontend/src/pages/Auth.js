@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Auth component
 
-Updated: 05/29/2020
+Updated: 06/08/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -130,8 +130,9 @@ class AuthPage extends Component {
                 query: `
                     mutation CreateUser($email: String!, $password: String!){
                         createUser(userInput: {email: $email, password: $password}) {
-                            _id
-                            email
+                            userId
+                            token
+                            tokenExpiration
                         }
                     }
                 `,
@@ -174,11 +175,19 @@ class AuthPage extends Component {
             return res.json();
         }).then(resData => {
             console.log(resData);
-            if (resData.data.login.token) {
-                this
-                    .context
-                    .login(resData.data.login.token, resData.data.login.userId, resData.data.login.tokenExpiration);
+            let token;
+            let userId;
+            let tokenExpiration;
+            if (resData.data.login) {
+                token = resData.data.login.token;
+                userId = resData.data.login.userId;
+                tokenExpiration = resData.data.login.tokenExpiration;
+            } else {
+                token = resData.data.createUser.token;
+                userId = resData.data.createUser.userId;
+                tokenExpiration = resData.data.createUser.tokenExpiration;
             }
+            this.context.login(token, userId, tokenExpiration);
         }).catch(err => {
             console.log(err);
         });
@@ -190,8 +199,7 @@ class AuthPage extends Component {
             <div className={classes.root}>
                 <CssBaseline/>
                 <Container component="main" maxWidth="xs">
-                    {/* component="main"- default is "div"
-                    <CssBaseline/> */}
+                    {/* component="main"- default is "div" */}
                     <div className={classes.paper}>
                         {/* CHANGE THE AVATAR FOR THE LOGO ICON!!! */}
                         <Avatar className={classes.avatar}>
@@ -203,7 +211,6 @@ class AuthPage extends Component {
                                 : "Signup"}
                         </Typography>
                         <form className={classes.form} onSubmit={this.submitHandler}>
-                            {/* CHECK IF noValidate NEED*/}
                             <TextField
                                 variant="outlined"
                                 margin="normal"

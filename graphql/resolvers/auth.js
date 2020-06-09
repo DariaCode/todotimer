@@ -18,7 +18,7 @@ module.exports = {
   createUser: async (args) => {
     try {
       // Checking whether the email already exists in the database.
-      // If not, to encrypt this password and save the new user in the database
+      // If not, to encrypt this password and save the new user in the database.
       const existingUser = await User.findOne({
         email: args.userInput.email,
       });
@@ -34,11 +34,9 @@ module.exports = {
         confirmed: false,
       });
       const result = await user.save();
+      // Send confirmation email.
       sendEmail(result);
-      return {
-        ...result._doc,
-        password: null,
-      };
+      return generateJWT(result);
     } catch (error) {
       throw error;
     }
@@ -79,7 +77,6 @@ module.exports = {
             confirmed: null,
           });
           const result = await user.save();
-          console.log('result: ', result);
           return generateJWT(result);
         }
       }
@@ -113,7 +110,6 @@ module.exports = {
             confirmed: null,
           });
           const result = await user.save();
-          console.log('result: ', result);
           return generateJWT(result);
         }
       }
@@ -132,14 +128,15 @@ module.exports = {
   },
   confirmUser: async (args, req, res) => {
     try {
-      const decodedToken = jwt.verify(args.confirmInput.emailToken, process.env.NODEMAILER_TOKEN);
+      const decodedToken = jwt.verify(args.confirmInput.emailToken,
+          process.env.NODEMAILER_TOKEN);
       await User.findByIdAndUpdate(decodedToken.user, {
         $set: {
           confirmed: true,
         },
       }).exec();
       return {
-        msgs: 'It works!',
+        msgs: 'User\'s email has been confirmed!',
       };
     } catch (err) {
       throw err;

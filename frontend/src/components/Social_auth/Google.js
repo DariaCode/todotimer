@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Google button component
 
-Updated: 05/29/2020
+Updated: 06/08/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -76,7 +76,7 @@ class Google extends Component {
                 variant="outlined"
                 color="primary"
                 onClick={renderProps.onClick} 
-                disabled={renderProps.disabled}>LOGIN WITH GOOGLE</Button>
+                disabled={renderProps.disabled}>CONTINUE WITH GOOGLE</Button>
               )}
               // className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-fullWidth"
               disabledStyle

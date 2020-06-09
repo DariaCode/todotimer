@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Facebook button component
 
-Updated: 05/29/2020
+Updated: 06/08/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -68,6 +68,7 @@ class Facebook extends Component {
                 appId={config.FACEBOOK_APP_ID}
                 cssClass ="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-fullWidth"
                 // icon={<FacebookIcon/>}
+                textButton="Continue with Facebook"
                 autoLoad={false}
                 fields="name,email"
                 callback={this.responseFacebook} />

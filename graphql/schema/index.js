@@ -83,7 +83,7 @@ type RootQuery {
 
 type RootMutation {
     createTask(taskInput: TaskInput): Task
-    createUser(userInput: UserInput): User
+    createUser(userInput: UserInput): AuthData!
     confirmUser(confirmInput: ConfirmInput): Msgs
     authFacebook(facebookInput: SocialAuthInput!): AuthData!
     authGoogle(googleInput: SocialAuthInput!): AuthData!
