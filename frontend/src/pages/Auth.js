@@ -259,7 +259,7 @@ class AuthPage extends Component {
                             </div>
                             <Grid container justify="center">
                             <Grid item xs>
-                                <Link href="#" variant="body2">
+                                <Link href="/resetPassword" variant="body2">
                                     Forgot password?
                                 </Link>
                             </Grid> 

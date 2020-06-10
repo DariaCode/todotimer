@@ -13,6 +13,7 @@ import AuthPage from './pages/Auth';
 import TasksPage from './pages/Tasks';
 import StatisticsPage from './pages/Statistics';
 import ConfirmPage from './pages/Confirm';
+import ResetPasswordEmailPage from './pages/ResetPasswordEmail';
 import ResetPasswordPage from './pages/ResetPassword';
 import MainNavigation from './components/Navigation/MainNavigation';
 import AuthContext from './context/auth-context';
@@ -118,7 +119,8 @@ class App extends Component {
                                 {this.state.token && <Redirect from="/auth" to="/tasks" exact/>}
                                 {!this.state.token && <Route path="/auth" component={AuthPage}/>}
                                 <Route path="/confirm/:emailToken" component={ConfirmPage}/>
-                                <Route path="/resetPassword" component={ResetPasswordPage}/>
+                                <Route path="/resetPassword" component={ResetPasswordEmailPage} exact/>
+                                <Route path="/resetPassword/:emailToken" component={ResetPasswordPage}/>
                                 {this.state.token && <Route path="/tasks" component={TasksPage}/>}
                                 {this.state.token && <Route path="/statistics" component={StatisticsPage}/>}
                                 {!this.state.token && <Redirect to="/auth" exact/>}

@@ -11,7 +11,7 @@ const bcrypt = require('bcryptjs'); // to encrypt the passwords in the database
 const User = require('../../models/user');
 const {authFacebook, authGoogle} = require('../../helpers/passport');
 const {generateJWT} = require('../../helpers/jwt');
-const {sendEmail} = require('../../helpers/nodemailer');
+const {sendEmail, sendPasswordEmail} = require('../../helpers/nodemailer');
 const jwt = require('jsonwebtoken'); // to generate JSON web token
 
 module.exports = {
@@ -45,7 +45,7 @@ module.exports = {
     const user = await User.findOne({
       email: email,
     });
-    // to validate the email whether it exists in the database or not.
+    // Validate the email whether it exists in the database or not.
     if (!user) {
       throw new Error('User does not exist');
     }
@@ -126,7 +126,7 @@ module.exports = {
       return error;
     }
   },
-  confirmUser: async (args, req, res) => {
+  confirmUser: async (args) => {
     try {
       const decodedToken = jwt.verify(args.confirmInput.emailToken,
           process.env.NODEMAILER_TOKEN);
@@ -137,6 +137,42 @@ module.exports = {
       }).exec();
       return {
         msgs: 'User\'s email has been confirmed!',
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+  resetPasswordEmail: async (args) => {
+    try {
+      // Checking whether the email already exists in the database.
+      const user = await User.findOne({
+        email: args.resetPasswordInput.email,
+      });
+      if (!user) {
+        throw new Error('User does not exist');
+      } else {
+        sendPasswordEmail(user);
+      }
+      return {
+        msgs: 'Email was sent.',
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+  resetPassword: async (args) => {
+    try {
+      const decodedToken = jwt.verify(args.resetPasswordInput.emailToken,
+          process.env.NODEMAILER_PASSWORD_TOKEN);
+      const hashedPassword = await bcrypt.hash(args.resetPasswordInput.password,
+          parseInt(process.env.BCRYPT));
+      const result = await User.findByIdAndUpdate(decodedToken.user, {
+        $set: {
+          password: hashedPassword,
+        }});
+      return {
+        ...result._doc,
+        password: null,
       };
     } catch (err) {
       throw err;
