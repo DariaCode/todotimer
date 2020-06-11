@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Main App.js
 
-Updated: 05/09/2020
+Updated: 05/11/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -12,6 +12,7 @@ import {BrowserRouter, Route, Redirect, Switch} from 'react-router-dom';
 import AuthPage from './pages/Auth';
 import TasksPage from './pages/Tasks';
 import StatisticsPage from './pages/Statistics';
+import SettingsPage from './pages/Settings';
 import ConfirmPage from './pages/Confirm';
 import ResetPasswordEmailPage from './pages/ResetPasswordEmail';
 import ResetPasswordPage from './pages/ResetPassword';
@@ -123,6 +124,7 @@ class App extends Component {
                                 <Route path="/resetPassword/:emailToken" component={ResetPasswordPage}/>
                                 {this.state.token && <Route path="/tasks" component={TasksPage}/>}
                                 {this.state.token && <Route path="/statistics" component={StatisticsPage}/>}
+                                {this.state.token && <Route path="/settings" component={SettingsPage}/>}
                                 {!this.state.token && <Redirect to="/auth" exact/>}
                             </Switch>
                         </main>

@@ -22,7 +22,7 @@ import {
     ResponsiveContainer
 } from 'recharts';
 
-// Material-UI components (https://material-ui.com/)
+// Material-UI components (https://material-ui.com/).
 import {withStyles} from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -49,9 +49,6 @@ const styles = theme => ({
     },
     paper: {
         padding: theme.spacing(1.5)
-    },
-    overview: {
-        padding: theme.spacing(0.5, 0)
     },
     spinner: {
         display: 'flex',

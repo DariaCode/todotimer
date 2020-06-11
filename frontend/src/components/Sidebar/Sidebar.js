@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Sidebar component
 
-Updated: 05/10/2020
+Updated: 06/11/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -22,6 +22,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import AssessmentIcon from '@material-ui/icons/Assessment';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 // Style for Material-UI components
 const useStyles = makeStyles((theme) => ({
@@ -111,9 +112,20 @@ export default function Sidebar() {
               }}
             >
               <ListItemIcon>
-                <AssignmentTurnedInIcon color="primary" />
+                <AssignmentTurnedInIcon />
               </ListItemIcon>
               <ListItemText primary="Completed" />
+            </ListItem>
+            <ListItem
+              button
+              component={NavLink} to="/settings"
+              selected={selectedIndex === 5}
+              onClick={(event) => handleListItemClick(event, 5)}
+            >
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
             </ListItem>
           </List>
         </div>}
