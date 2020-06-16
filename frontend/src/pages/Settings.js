@@ -17,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 
+
 // Style for Material-UI components
 const styles = (theme) => ({
     root: {
@@ -68,7 +69,7 @@ class SettingsPage extends Component {
                             </Typography>
                             <Typography gutterBottom>
                                 Email
-                            </Typography>
+                            </Typography> 
                         </Paper>}
                 </Container>
             </div>
