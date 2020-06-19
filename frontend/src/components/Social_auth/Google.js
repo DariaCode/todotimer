@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Google button component
 
-Updated: 06/08/2020
+Updated: 06/19/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -32,6 +32,7 @@ class Google extends Component {
                 userId
                 token
                 tokenExpiration
+                email
               }
             }
         `,
@@ -59,7 +60,7 @@ class Google extends Component {
              if (resData.data.authGoogle.token) {
                 this
                     .context
-                    .login(resData.data.authGoogle.token, resData.data.authGoogle.userId, resData.data.authGoogle.tokenExpiration);
+                    .login(resData.data.authGoogle.token, resData.data.authGoogle.userId, resData.data.authGoogle.tokenExpiration, resData.data.authGoogle.email);
             } 
         }).catch(err => {
             console.log(err);

@@ -19,6 +19,7 @@ const generateJWT = (user) => {
     userId: user.id,
     token: token,
     tokenExpiration: 24, // CHANGE 24h EXPIRATION INTERVAL!!!
+    email: user.email,
   };
 };
 

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Main App.js
 
-Updated: 05/11/2020
+Updated: 06/19/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -39,6 +39,7 @@ class App extends Component {
         token: null,
         userId: null,
         listsOption: null,
+        email: null,
     }
 
     // componentDidMount() executes when the page loads = is invoked immediately
@@ -55,7 +56,8 @@ class App extends Component {
                 const base64 = base64Url.replace("-", "+").replace("_", "/");
                 const tokenData = JSON.parse(atob(base64));
                 let userId = tokenData.userId;
-                this.setState({token: token, userId: userId});
+                let email = tokenData.email;
+                this.setState({token: token, userId: userId, email: email});
             } else {
                 // The user is not authenticated
                 console.log("ComponentDidMount: the user is not authenticated");
@@ -74,15 +76,17 @@ class App extends Component {
         return Promise.resolve(false);
     };
 
-    login = (token, userId) => {
+    login = (token, userId, _, email) => {
         localStorage.setItem("token", JSON.stringify(token));
         localStorage.setItem("userId", JSON.stringify(userId));
-        this.setState({token: token, userId: userId});
+        localStorage.setItem("email", JSON.stringify(email));
+        this.setState({token: token, userId: userId, email: email});
     }
 
     logout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("userId")
+        localStorage.removeItem("userId");
+        localStorage.removeItem("email")
         this.setState({token: null, userId: null});
     }
 
@@ -106,6 +110,7 @@ class App extends Component {
                         value={{
                         token: this.state.token,
                         userId: this.state.userId,
+                        email: this.state.email,
                         login: this.login,
                         logout: this.logout
                     }}>

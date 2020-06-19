@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Auth component
 
-Updated: 06/08/2020
+Updated: 06/19/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -115,6 +115,7 @@ class AuthPage extends Component {
                         userId
                         token
                         tokenExpiration
+                        email
                     }
                 }
             `,
@@ -133,6 +134,7 @@ class AuthPage extends Component {
                             userId
                             token
                             tokenExpiration
+                            email
                         }
                     }
                 `,
@@ -178,16 +180,19 @@ class AuthPage extends Component {
             let token;
             let userId;
             let tokenExpiration;
+            let email;
             if (resData.data.login) {
                 token = resData.data.login.token;
                 userId = resData.data.login.userId;
                 tokenExpiration = resData.data.login.tokenExpiration;
+                email = resData.data.login.email; 
             } else {
                 token = resData.data.createUser.token;
                 userId = resData.data.createUser.userId;
                 tokenExpiration = resData.data.createUser.tokenExpiration;
+                email = resData.data.createUser.email;
             }
-            this.context.login(token, userId, tokenExpiration);
+            this.context.login(token, userId, tokenExpiration, email);
         }).catch(err => {
             console.log(err);
         });

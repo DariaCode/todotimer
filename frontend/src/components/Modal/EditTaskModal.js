@@ -1,3 +1,10 @@
+/* ----------------------------------------------------
+React.js / Edit task modal component
+
+Updated: 06/19/2020
+Author: Daria Vodzinskaia
+Website: www.dariacode.dev
+-------------------------------------------------------  */
 import React from 'react';
 
 // Material-UI components (https://material-ui.com/)

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Facebook button component
 
-Updated: 06/08/2020
+Updated: 06/19/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -29,6 +29,7 @@ class Facebook extends Component {
                 userId
                 token
                 tokenExpiration
+                email
               }
             }
         `,
@@ -55,7 +56,7 @@ class Facebook extends Component {
             if (resData.data.authFacebook.token) {
                 this
                     .context
-                    .login(resData.data.authFacebook.token, resData.data.authFacebook.userId, resData.data.authFacebook.tokenExpiration);
+                    .login(resData.data.authFacebook.token, resData.data.authFacebook.userId, resData.data.authFacebook.tokenExpiration, resData.data.authFacebook.email);
             }
         }).catch(err => {
             console.log(err);

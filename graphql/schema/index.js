@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / Schema for GraphQL
 
-Updated: 06/10/2020
+Updated: 06/19/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -40,6 +40,7 @@ type AuthData {
     userId: ID!
     token: String!
     tokenExpiration: Int!
+    email: String!
 }
 
 input TaskInput {
@@ -99,6 +100,7 @@ type RootMutation {
     authGoogle(googleInput: SocialAuthInput!): AuthData!
     resetPasswordEmail(resetPasswordInput: ResetPasswordEmailInput): Msgs
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
+    deleteUser(userId:ID!): User!
     updateTask(taskId: ID!, taskInput: UpdateTaskInput): Task!
     completeTask(taskId: ID!): Task!
     deleteTask(taskId: ID!): Task!

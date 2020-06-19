@@ -12,7 +12,7 @@ import AuthContext from '../context/auth-context';
 
 // Material-UI components (https://material-ui.com/)
 import { withStyles } from '@material-ui/core/styles';
-import Modal from '../components/Modal/Modal';
+import Modal from '../components/Modal/EditTaskModal';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Lists from '../components/Tasks/TaskList/Lists'

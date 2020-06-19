@@ -1,13 +1,14 @@
 /* ----------------------------------------------------
 React.js / Settings page component
 
-Updated: 06/11/2020
+Updated: 06/19/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import React, { Component } from "react";
-import AuthContext from "../context/auth-context";
+import AuthContext from '../context/auth-context';
+import DeleteModal from '../components/Modal/DeleteUserModal';
 
 // Material-UI components (https://material-ui.com/).
 import { withStyles } from "@material-ui/core/styles";
@@ -44,20 +45,29 @@ const styles = theme => ({
   gridWrapper: {
     padding: theme.spacing(3)
   },
+  typography: {
+    display: "flex",
+    alignItems: "center",
+  },
   form: {
     maxWidth: "350px"
   },
   button: {
     minWidth: "128px",
     margin: theme.spacing(1)
+  },
+  formButtons: {
+    display: "flex",
+    justifyContent: "center", 
   }
 });
 
 class SettingsPage extends Component {
   state = {
     isLoading: false,
-    changeEmail: true,
-    changePassword: true
+    deleting: false,
+    changeEmail: false,
+    changePassword: false
   };
   // To add access to context data.
   static contextType = AuthContext;
@@ -69,6 +79,27 @@ class SettingsPage extends Component {
     this.curPasswordEl = React.createRef();
     this.newPasswordEl = React.createRef();
   }
+
+  deleteUser = () => {
+      this.setState({deleting: true});
+  }
+
+  closeModal = () => {
+      this.setState({deleting: false});
+  }
+
+  changeEmail = () => {
+    this.setState({changeEmail: true, changePassword: false})
+  }
+
+  changePassword = () => {
+    this.setState({changeEmail: false, changePassword: true})
+  }
+
+  handleCancel = () => {
+      this.setState({changeEmail: false, changePassword: false})
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -94,7 +125,7 @@ class SettingsPage extends Component {
               </Typography>
               <div className={classes.gridWrapper}>
                 <Grid container direction="row" justify="flex-start">
-                  <Grid item xs={12} lg={2}>
+                  <Grid item xs={12} lg={2} className={classes.typography}>
                     <Typography>Email</Typography>
                   </Grid>
                   <Grid>
@@ -105,7 +136,7 @@ class SettingsPage extends Component {
                           margin="dense"
                           required
                           fullWidth
-                          id="email"
+                          id="new_email"
                           label="New Email"
                           name="new email"
                           autoComplete="New email"
@@ -118,7 +149,7 @@ class SettingsPage extends Component {
                           margin="dense"
                           required
                           fullWidth
-                          id="email"
+                          id="confirm_email"
                           label="Confirm Email"
                           name="comfirm email"
                           autoComplete="Confirm email"
@@ -134,12 +165,12 @@ class SettingsPage extends Component {
                           name="password"
                           label="Current Password"
                           type="password"
-                          id="password"
+                          id="current_password"
                           autoComplete="current-password"
                           size="small"
                           inputRef={this.curPasswordEl}
                         />
-                        <Grid>
+                        <Grid className={classes.formButtons}>
                           <Button
                             className={classes.button}
                             variant="contained"
@@ -151,6 +182,7 @@ class SettingsPage extends Component {
                             className={classes.button}
                             variant="outlined"
                             color="secondary"
+                            onClick={this.handleCancel}
                           >
                             Cancel
                           </Button>
@@ -163,8 +195,11 @@ class SettingsPage extends Component {
                         justify="flex-start"
                         alignItems="center"
                       >
-                        <Typography>{this.context.userId}</Typography>
-                        <Button color="primary" className={classes.button}>
+                        <Typography>{this.context.email}</Typography>
+                        <Button 
+                        color="primary" 
+                        className={classes.button}
+                        onClick={this.changeEmail}>
                           Change
                         </Button>
                       </Grid>
@@ -176,11 +211,11 @@ class SettingsPage extends Component {
                   direction="row"
                   justify="flex-start"
                 >
-                  <Grid item xs={12} lg={2}>
+                  <Grid item xs={12} lg={2} className={classes.typography}>
                     <Typography>Password</Typography>
                   </Grid>
                   <Grid>
-                    {this.state.changeEmail ? (
+                    {this.state.changePassword ? (
                       <Grid className={classes.form}>
                         <TextField
                           variant="outlined"
@@ -190,7 +225,7 @@ class SettingsPage extends Component {
                           name="password"
                           label="Current Password"
                           type="password"
-                          id="password"
+                          id="current-password"
                           autoComplete="current-password"
                           size="small"
                           inputRef={this.curPasswordEl}
@@ -203,12 +238,12 @@ class SettingsPage extends Component {
                           name="password"
                           label="New Password"
                           type="password"
-                          id="password"
+                          id="new_password"
                           autoComplete="new-password"
                           size="small"
                           inputRef={this.newPasswordEl}
                         />
-                        <Grid>
+                        <Grid className={classes.formButtons}>
                           <Button
                             className={classes.button}
                             variant="contained"
@@ -220,6 +255,7 @@ class SettingsPage extends Component {
                             className={classes.button}
                             variant="outlined"
                             color="secondary"
+                            onClick={this.handleCancel}
                           >
                             Cancel
                           </Button>
@@ -233,7 +269,10 @@ class SettingsPage extends Component {
                         alignItems="center"
                       >
                         <Typography>●●●●●●</Typography>
-                        <Button color="primary" className={classes.button}>
+                        <Button 
+                        color="primary" 
+                        className={classes.button}
+                        onClick={this.changePassword}>
                           Change
                         </Button>
                       </Grid>
@@ -250,6 +289,7 @@ class SettingsPage extends Component {
                     variant="outlined"
                     color="secondary"
                     className={classes.button}
+                    onClick={this.deleteUser}
                   >
                     Delete Account
                   </Button>
@@ -258,6 +298,8 @@ class SettingsPage extends Component {
             </Paper>
           )}
         </Container>
+        {this.state.deleting && <DeleteModal
+        onCancel={this.closeModal} />}
       </div>
     );
   }

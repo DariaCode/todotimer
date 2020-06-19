@@ -178,4 +178,17 @@ module.exports = {
       throw err;
     }
   },
+  deleteUser: async (args) => {
+    try {
+      const user = await User.findOne({
+        userId: args.deleteUser.userId,
+      });
+      console.log('DELETE USER', user);
+      return {
+        ...user_doc,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
 };
