@@ -7,8 +7,8 @@ Website: www.dariacode.dev
 -------------------------------------------------------  */
 
 import React, { Component } from "react";
-import AuthContext from '../context/auth-context';
-import DeleteModal from '../components/Modal/DeleteUserModal';
+import AuthContext from "../context/auth-context";
+import DeleteModal from "../components/Modal/DeleteUserModal";
 
 // Material-UI components (https://material-ui.com/).
 import { withStyles } from "@material-ui/core/styles";
@@ -20,6 +20,8 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from '@material-ui/core/Snackbar';
 
 // Style for Material-UI components
 const styles = theme => ({
@@ -47,7 +49,7 @@ const styles = theme => ({
   },
   typography: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "center"
   },
   form: {
     maxWidth: "350px"
@@ -58,7 +60,7 @@ const styles = theme => ({
   },
   formButtons: {
     display: "flex",
-    justifyContent: "center", 
+    justifyContent: "center"
   }
 });
 
@@ -67,7 +69,9 @@ class SettingsPage extends Component {
     isLoading: false,
     deleting: false,
     changeEmail: false,
-    changePassword: false
+    changePassword: false,
+    errorEmail: "",
+    successMsgs: false
   };
   // To add access to context data.
   static contextType = AuthContext;
@@ -81,24 +85,98 @@ class SettingsPage extends Component {
   }
 
   deleteUser = () => {
-      this.setState({deleting: true});
-  }
+    this.setState({ deleting: true });
+  };
 
   closeModal = () => {
-      this.setState({deleting: false});
-  }
+    this.setState({ deleting: false });
+  };
 
   changeEmail = () => {
-    this.setState({changeEmail: true, changePassword: false})
-  }
+    this.setState({ changeEmail: true, changePassword: false });
+  };
+
+  confirmNewEmail = () => {
+    const newEmail = this.newEmailEl.current.value;
+    const confEmail = this.confEmailEl.current.value;
+    const curPassword = this.curPasswordEl.current.value;
+    if (newEmail !== confEmail) {
+      this.setState({
+        errorEmail:
+          "Your confirmation email doesn't match your new email. Please try again."
+      });
+    } else if (newEmail === this.context.email) {
+      this.setState({
+        errorEmail:
+          "This email address is already registered."
+      });
+    }else {
+      this.setState({errorEmail: ''});
+      // To create body for POST request for login
+      let requestBody = {
+        query: `
+          mutation ChangeEmail($newEmail: String!, $password: String!) {
+            changeEmail(newEmail: $newEmail, password: $password) {
+              userId
+              token
+              tokenExpiration
+              email
+              }
+            }
+          `,
+          variables: {
+            newEmail: newEmail,
+            password: curPassword
+          }
+      };
+
+      const token = this.context.token;
+
+      fetch('http://localhost:8000/graphql', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    }).then(res => {
+      if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Failed ');
+      }
+      return res.json();
+    }).then(resData => {
+      if(resData.errors){
+        // To handle error message.
+        this.setState({errorEmail: resData.errors[0].message});
+      } else {
+        this.setState({
+          errorEmail: '', 
+          changeEmail: false, 
+          successMsgs: true
+        });
+        const token = resData.data.changeEmail.token;
+        const userId = resData.data.changeEmail.userId;
+        const tokenExpiration = resData.data.changeEmail.tokenExpiration;
+        const email = resData.data.changeEmail.email;
+        this.context.login(token, userId, tokenExpiration, email);
+      }
+    }).catch(err => {
+      console.log(err);
+    }); 
+    }
+  };
 
   changePassword = () => {
-    this.setState({changeEmail: false, changePassword: true})
-  }
+    this.setState({ changeEmail: false, changePassword: true });
+  };
 
   handleCancel = () => {
-      this.setState({changeEmail: false, changePassword: false})
-  }
+    this.setState({ changeEmail: false, changePassword: false });
+  };
+
+  handleCloseSnackbar = () => {
+    this.setState({successMsgs: false});
+  };
 
   render() {
     const { classes } = this.props;
@@ -131,6 +209,9 @@ class SettingsPage extends Component {
                   <Grid>
                     {this.state.changeEmail ? (
                       <Grid className={classes.form}>
+                        {this.state.errorEmail && (
+                          <Alert severity="error">{this.state.errorEmail}</Alert>
+                        )}
                         <TextField
                           variant="outlined"
                           margin="dense"
@@ -175,6 +256,7 @@ class SettingsPage extends Component {
                             className={classes.button}
                             variant="contained"
                             color="primary"
+                            onClick={this.confirmNewEmail}
                           >
                             Ok
                           </Button>
@@ -196,21 +278,18 @@ class SettingsPage extends Component {
                         alignItems="center"
                       >
                         <Typography>{this.context.email}</Typography>
-                        <Button 
-                        color="primary" 
-                        className={classes.button}
-                        onClick={this.changeEmail}>
+                        <Button
+                          color="primary"
+                          className={classes.button}
+                          onClick={this.changeEmail}
+                        >
                           Change
                         </Button>
                       </Grid>
                     )}
                   </Grid>
                 </Grid>
-                <Grid
-                  container
-                  direction="row"
-                  justify="flex-start"
-                >
+                <Grid container direction="row" justify="flex-start">
                   <Grid item xs={12} lg={2} className={classes.typography}>
                     <Typography>Password</Typography>
                   </Grid>
@@ -230,7 +309,7 @@ class SettingsPage extends Component {
                           size="small"
                           inputRef={this.curPasswordEl}
                         />
-                         <TextField
+                        <TextField
                           variant="outlined"
                           margin="dense"
                           required
@@ -269,10 +348,11 @@ class SettingsPage extends Component {
                         alignItems="center"
                       >
                         <Typography>●●●●●●</Typography>
-                        <Button 
-                        color="primary" 
-                        className={classes.button}
-                        onClick={this.changePassword}>
+                        <Button
+                          color="primary"
+                          className={classes.button}
+                          onClick={this.changePassword}
+                        >
                           Change
                         </Button>
                       </Grid>
@@ -298,8 +378,15 @@ class SettingsPage extends Component {
             </Paper>
           )}
         </Container>
-        {this.state.deleting && <DeleteModal
-        onCancel={this.closeModal} />}
+        {this.state.deleting && <DeleteModal onCancel={this.closeModal} />}
+        <Snackbar 
+        open={this.state.successMsgs} 
+        autoHideDuration={8000}
+        onClose={this.handleCloseSnackbar}>
+        <Alert variant="outlined" severity="success" onClose={this.handleCloseSnackbar}>
+          Email successfilly changed!
+        </Alert>
+        </Snackbar>
       </div>
     );
   }

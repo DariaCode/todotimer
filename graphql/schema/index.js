@@ -87,6 +87,11 @@ input ResetPasswordInput {
     password: String!
 }
 
+input ChangeEmailInput {
+    newEmail: String!
+    password: String!
+}
+
 type RootQuery {
     tasks: [Task!]!
     login(email: String!, password: String!): AuthData!
@@ -100,7 +105,8 @@ type RootMutation {
     authGoogle(googleInput: SocialAuthInput!): AuthData!
     resetPasswordEmail(resetPasswordInput: ResetPasswordEmailInput): Msgs
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
-    deleteUser(userId:ID!): User!
+    changeEmail(newEmail: String!, password: String!): AuthData
+    deleteUser(userId: ID!): User!
     updateTask(taskId: ID!, taskInput: UpdateTaskInput): Task!
     completeTask(taskId: ID!): Task!
     deleteTask(taskId: ID!): Task!

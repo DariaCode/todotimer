@@ -2,7 +2,7 @@
 /* ----------------------------------------------------
 React.js / Reset Password Email page component
 
-Updated: 05/10/2020
+Updated: 06/22/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -100,7 +100,7 @@ fetch('http://localhost:8000/graphql', {
           console.log(resData);
           if(resData.errors){
             // To handle error message.
-            this.setState({isSent: false, showError: "User does not exist"});
+            this.setState({isSent: false, showError: resData.errors[0].message});
           } else {
             this.setState({isSent: true, email: email});
           }

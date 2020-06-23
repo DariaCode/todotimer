@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Delete user modal component
 
-Updated: 06/19/2020
+Updated: 06/22/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -21,7 +21,6 @@ import Alert from "@material-ui/lab/Alert";
 import Grid from "@material-ui/core/Grid";
 import Checkbox from '@material-ui/core/Checkbox';
 
-// Style for Material-UI components
 // Style for Material-UI components
 const styles = theme => ({
   action: {
@@ -63,9 +62,38 @@ class DeleteModal extends Component {
   confirmHandler = () => {
     const email = this.emailEl.current.value;
     if(email !== this.context.email){
-      this.setState({showError: "Email is incorrect."});
+      this.setState({showError: "Email is incorrect"});
     } else {
       this.setState({showError: ""});
+      // To create body for POST request for login
+      let requestBody = {
+        query: `
+          mutation DeleteUser($userId: ID!) {
+            deleteUser(userId: $userId) {
+              _id
+              email
+              }
+            }
+          `,
+          variables: {
+            userId: this.context.userId,
+          }
+      };
+
+    fetch('http://localhost:8000/graphql', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => {
+      if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Failed ');
+      }
+      return res.json();
+    }).catch(err => {
+      console.log(err);
+    }); 
     }
     console.log("IR WORKS!!!", this.context.userId, this.context.email, email);
   };

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / User resolver for GraphQL
 
-Updated: 06/02/2020
+Updated: 06/22/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -9,6 +9,7 @@ Website: www.dariacode.dev
 const bcrypt = require('bcryptjs'); // to encrypt the passwords in the database
 
 const User = require('../../models/user');
+const Task = require('../../models/task');
 const {authFacebook, authGoogle} = require('../../helpers/passport');
 const {generateJWT} = require('../../helpers/jwt');
 const {sendEmail, sendPasswordEmail} = require('../../helpers/nodemailer');
@@ -150,6 +151,8 @@ module.exports = {
       });
       if (!user) {
         throw new Error('User does not exist');
+      } else if (!user.password) {
+        throw new Error('You have previously logged in with a social media account. As a security measure, you can not reset password');
       } else {
         sendPasswordEmail(user);
       }
@@ -178,15 +181,39 @@ module.exports = {
       throw err;
     }
   },
+  changeEmail: async (args, req) => {
+    // console.log('CHANGE EMAIL ARGS', args, 'CHANGE EMAIL ', req.userId);
+    const user = await User.findById({_id: req.userId});
+    const newEmailUser = await User.findOne({email: args.newEmail});
+    if (!user.password) {
+      throw new Error('You have previously logged in with a social media account. As a security measure, you can not change your email.');
+    } else if (newEmailUser) {
+      throw new Error('This email address is already registered.');
+    } else {
+    // to compare password by using bcrypt.
+      const isEqual = await bcrypt.compare(args.password, user.password);
+      if (!isEqual) {
+        throw new Error('Password is incorrect ');
+      } else {
+        const result = await User.findByIdAndUpdate(req.userId, {
+          $set: {
+            email: args.newEmail,
+          }});
+        const resultEmail = {
+          ...result._doc,
+          id: result._id,
+          email: args.newEmail,
+        };
+        return generateJWT(resultEmail);
+      }
+    }
+  },
   deleteUser: async (args) => {
     try {
-      const user = await User.findOne({
-        userId: args.deleteUser.userId,
-      });
+      const user = await User.findById({_id: args.userId});
+      await Task.deleteMany({creator: args.userId});
       console.log('DELETE USER', user);
-      return {
-        ...user_doc,
-      };
+      return user; // CHANGE TO password: null
     } catch (err) {
       throw err;
     }
