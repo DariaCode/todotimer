@@ -287,7 +287,7 @@ class AuthPage extends Component {
                         <Copyright/>
                     </Container>
                 </footer>
-            </div>
+            </div> 
         );
     }
 }

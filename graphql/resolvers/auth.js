@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 Node.js / User resolver for GraphQL
 
-Updated: 06/22/2020
+Updated: 06/23/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -182,7 +182,6 @@ module.exports = {
     }
   },
   changeEmail: async (args, req) => {
-    // console.log('CHANGE EMAIL ARGS', args, 'CHANGE EMAIL ', req.userId);
     const user = await User.findById({_id: req.userId});
     const newEmailUser = await User.findOne({email: args.newEmail});
     if (!user.password) {
@@ -208,12 +207,39 @@ module.exports = {
       }
     }
   },
+  changePassword: async (args, req) => {
+    try {
+      const user = await User.findById({_id: req.userId});
+      const hashedPassword = await bcrypt.hash(args.newPassword,
+          parseInt(process.env.BCRYPT));
+
+      if (!user.password) {
+        throw new Error('You have previously logged in with a social media account. As a security measure, you can not change your password.');
+      } else {
+        const isEqual = await bcrypt.compare(args.password, user.password);
+        if (!isEqual) {
+          throw new Error('Password is incorrect');
+        } else {
+          await User.findByIdAndUpdate(req.userId, {
+            $set: {
+              password: hashedPassword,
+            }});
+          return {
+            msgs: 'Password successfilly changed!',
+          };
+        }
+      }
+    } catch (err) {
+      throw err;
+    }
+  },
   deleteUser: async (args) => {
     try {
-      const user = await User.findById({_id: args.userId});
       await Task.deleteMany({creator: args.userId});
-      console.log('DELETE USER', user);
-      return user; // CHANGE TO password: null
+      await User.deleteOne({_id: args.userId});
+      return {
+        msgs: 'User successfilly deleted!',
+      };
     } catch (err) {
       throw err;
     }

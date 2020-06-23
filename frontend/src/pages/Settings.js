@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Settings page component
 
-Updated: 06/19/2020
+Updated: 06/23/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -21,7 +21,7 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from "@material-ui/core/Snackbar";
 
 // Style for Material-UI components
 const styles = theme => ({
@@ -71,7 +71,9 @@ class SettingsPage extends Component {
     changeEmail: false,
     changePassword: false,
     errorEmail: "",
-    successMsgs: false
+    errorPassword: "",
+    showSuccessMsgs: false,
+    successMsgs: "",
   };
   // To add access to context data.
   static contextType = AuthContext;
@@ -107,12 +109,11 @@ class SettingsPage extends Component {
       });
     } else if (newEmail === this.context.email) {
       this.setState({
-        errorEmail:
-          "This email address is already registered."
+        errorEmail: "This email address is already registered."
       });
-    }else {
-      this.setState({errorEmail: ''});
-      // To create body for POST request for login
+    } else {
+      this.setState({ errorEmail: "" });
+      // To create body for POST request
       let requestBody = {
         query: `
           mutation ChangeEmail($newEmail: String!, $password: String!) {
@@ -124,46 +125,102 @@ class SettingsPage extends Component {
               }
             }
           `,
-          variables: {
-            newEmail: newEmail,
-            password: curPassword
-          }
+        variables: {
+          newEmail: newEmail,
+          password: curPassword
+        }
       };
 
       const token = this.context.token;
 
-      fetch('http://localhost:8000/graphql', {
-        method: 'POST',
+      fetch("http://localhost:8000/graphql", {
+        method: "POST",
         body: JSON.stringify(requestBody),
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
         }
-    }).then(res => {
-      if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Failed ');
-      }
-      return res.json();
-    }).then(resData => {
-      if(resData.errors){
-        // To handle error message.
-        this.setState({errorEmail: resData.errors[0].message});
-      } else {
-        this.setState({
-          errorEmail: '', 
-          changeEmail: false, 
-          successMsgs: true
+      })
+        .then(res => {
+          if (res.status !== 200 && res.status !== 201) {
+            throw new Error("Failed ");
+          }
+          return res.json();
+        })
+        .then(resData => {
+          if (resData.errors) {
+            // To handle error message.
+            this.setState({ errorEmail: resData.errors[0].message });
+          } else {
+            this.setState({
+              errorEmail: "",
+              changeEmail: false,
+              successMsgs: "Email successfilly changed!",
+              showSuccessMsgs: true
+            });
+            const token = resData.data.changeEmail.token;
+            const userId = resData.data.changeEmail.userId;
+            const tokenExpiration = resData.data.changeEmail.tokenExpiration;
+            const email = resData.data.changeEmail.email;
+            this.context.login(token, userId, tokenExpiration, email);
+          }
+        })
+        .catch(err => {
+          console.log(err);
         });
-        const token = resData.data.changeEmail.token;
-        const userId = resData.data.changeEmail.userId;
-        const tokenExpiration = resData.data.changeEmail.tokenExpiration;
-        const email = resData.data.changeEmail.email;
-        this.context.login(token, userId, tokenExpiration, email);
-      }
-    }).catch(err => {
-      console.log(err);
-    }); 
     }
+  };
+
+  confirmNewPassword = () => {
+    const curPassword = this.curPasswordEl.current.value;
+    const newPassword = this.newPasswordEl.current.value;
+    const token = this.context.token;
+
+      // To create body for POST request
+      let requestBody = {
+        query: `
+          mutation ChangePassword($password: String!, $newPassword: String!) {
+            changePassword(password: $password, newPassword: $newPassword) {
+              msgs
+              }
+            }
+          `,
+        variables: {
+          password: curPassword,
+          newPassword: newPassword,
+        }
+      };
+
+    fetch("http://localhost:8000/graphql", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error("Failed ");
+        }
+        return res.json();
+      })
+      .then(resData => {
+        if (resData.errors) {
+          // To handle error message.
+          this.setState({ errorPassword: resData.errors[0].message });
+        } else {
+        this.setState({
+          errorPassword: "",
+          changePassword: false,
+          successMsgs: "Password successfilly changed!",
+          showSuccessMsgs: true
+        });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   changePassword = () => {
@@ -175,7 +232,7 @@ class SettingsPage extends Component {
   };
 
   handleCloseSnackbar = () => {
-    this.setState({successMsgs: false});
+    this.setState({ successMsgs: "", showSuccessMsgs: false });
   };
 
   render() {
@@ -210,7 +267,9 @@ class SettingsPage extends Component {
                     {this.state.changeEmail ? (
                       <Grid className={classes.form}>
                         {this.state.errorEmail && (
-                          <Alert severity="error">{this.state.errorEmail}</Alert>
+                          <Alert severity="error">
+                            {this.state.errorEmail}
+                          </Alert>
                         )}
                         <TextField
                           variant="outlined"
@@ -296,6 +355,11 @@ class SettingsPage extends Component {
                   <Grid>
                     {this.state.changePassword ? (
                       <Grid className={classes.form}>
+                         {this.state.errorPassword && (
+                          <Alert severity="error">
+                            {this.state.errorPassword}
+                          </Alert>
+                        )}
                         <TextField
                           variant="outlined"
                           margin="dense"
@@ -327,6 +391,7 @@ class SettingsPage extends Component {
                             className={classes.button}
                             variant="contained"
                             color="primary"
+                            onClick={this.confirmNewPassword}
                           >
                             Ok
                           </Button>
@@ -379,13 +444,18 @@ class SettingsPage extends Component {
           )}
         </Container>
         {this.state.deleting && <DeleteModal onCancel={this.closeModal} />}
-        <Snackbar 
-        open={this.state.successMsgs} 
-        autoHideDuration={8000}
-        onClose={this.handleCloseSnackbar}>
-        <Alert variant="outlined" severity="success" onClose={this.handleCloseSnackbar}>
-          Email successfilly changed!
-        </Alert>
+        <Snackbar
+          open={this.state.showSuccessMsgs}
+          autoHideDuration={8000}
+          onClose={this.handleCloseSnackbar}
+        >
+          <Alert
+            variant="outlined"
+            severity="success"
+            onClose={this.handleCloseSnackbar}
+          >
+            {this.state.successMsgs}
+          </Alert>
         </Snackbar>
       </div>
     );

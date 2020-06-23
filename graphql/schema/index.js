@@ -106,7 +106,8 @@ type RootMutation {
     resetPasswordEmail(resetPasswordInput: ResetPasswordEmailInput): Msgs
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
     changeEmail(newEmail: String!, password: String!): AuthData
-    deleteUser(userId: ID!): User!
+    changePassword(password: String!, newPassword: String!): Msgs
+    deleteUser(userId: ID!): Msgs
     updateTask(taskId: ID!, taskInput: UpdateTaskInput): Task!
     completeTask(taskId: ID!): Task!
     deleteTask(taskId: ID!): Task!
