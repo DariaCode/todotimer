@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
 React.js / Auth component
 
-Updated: 06/19/2020
+Updated: 06/23/2020
 Author: Daria Vodzinskaia
 Website: www.dariacode.dev
 -------------------------------------------------------  */
@@ -176,7 +176,6 @@ class AuthPage extends Component {
             }
             return res.json();
         }).then(resData => {
-            console.log(resData);
             let token;
             let userId;
             let tokenExpiration;

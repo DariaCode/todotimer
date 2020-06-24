@@ -57,4 +57,4 @@ Built by Daria Vodzinskaia - [DariaCode](https://dariacode.dev)
 
 ### License
 
-This project is licensed under the GPL v3 License - see the [LICENSE.md](https://github.com/DariaCode/todotimer/blob/master/LICENSE) file for details.
+This project is licensed under the GPL v3 License - see the [LICENSE](https://github.com/DariaCode/todotimer/blob/master/LICENSE) file for details.

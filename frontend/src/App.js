@@ -38,8 +38,9 @@ class App extends Component {
     state = {
         token: null,
         userId: null,
-        listsOption: null,
         email: null,
+        listsOption: null,
+        allCounter: null,
     }
 
     // componentDidMount() executes when the page loads = is invoked immediately
@@ -93,6 +94,10 @@ class App extends Component {
     setListsOption = (option) => {
         this.setState({listsOption: option});
     }
+
+    setAllCounter = (option) => {
+        this.setState({allCounter: option});
+    }
     // componentWillUnmount() is invoked immediately before a component is unmounted
     // and destroyed. Perform any necessary cleanup in this method, such as
     // invalidating timers, canceling network requests, or cleaning up any
@@ -117,6 +122,8 @@ class App extends Component {
                         <ListsContext.Provider value={{
                             listsOption: this.state.listsOption,
                             setListsOption: this.setListsOption ,
+                            allCounter: this.state.allCounter,
+                            setAllCounter: this.setAllCounter,
                         }}>
                         <MainNavigation/>
                         <main className="main-content">

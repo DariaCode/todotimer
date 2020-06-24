@@ -84,6 +84,26 @@ const lists = (props) => {
     sorted7Days = sorted7Days.concat(weekDateList);
   }
 
+  // Counter for the sidebar.
+  let allCounter = 0;
+  for (let i=0; i<sortedAll.length; i++) {
+    if (sortedAll[i].date !== 'Complete') {
+      allCounter = allCounter + sortedAll[i].tasks.length;
+    }
+  };
+  let todayCounter = 0;
+  for (let j=0; j<sortedToday.length; j++) {
+    todayCounter = todayCounter + sortedToday[j].tasks.length;
+  }
+  let weekCounter = 0;
+  for (let k=0; k<sorted7Days.length; k++) {
+    weekCounter = weekCounter + sorted7Days[k].tasks.length;
+  }
+
+  console.log('all', allCounter,
+      'today', todayCounter,
+      'week', weekCounter);
+
   const listsAll = sortedAll.map((task) => {
     return (
       <DayList
@@ -139,7 +159,6 @@ const lists = (props) => {
         onCompleteTask={props.onCompleteTaskMain} />
     );
   });
-
 
   return (
     <ListsContext.Consumer>

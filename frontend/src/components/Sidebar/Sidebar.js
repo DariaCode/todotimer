@@ -61,6 +61,7 @@ export default function Sidebar() {
                 <InboxIcon color="primary"/>
               </ListItemIcon>
               <ListItemText primary="All Tasks"/>
+              puk{context.allCounter}
             </ListItem>
             <ListItem
               button
@@ -76,6 +77,7 @@ export default function Sidebar() {
                 <CalendarTodayIcon color="primary"/>
               </ListItemIcon>
               <ListItemText primary="Today" />
+              pak
             </ListItem>
             <ListItem
               button
@@ -90,6 +92,7 @@ export default function Sidebar() {
                 <DateRangeIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="Next 7 Days" />
+              pik
             </ListItem>
             <ListItem
               button
